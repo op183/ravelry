@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		69E7FAE41A3B477000CC3B35 /* RSSFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E7FAE31A3B477000CC3B35 /* RSSFeed.swift */; };
+		69E7FAE61A3B4BA700CC3B35 /* ArticleContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E7FAE51A3B4BA700CC3B35 /* ArticleContent.swift */; };
 		69F752D71A3AB879003B11EB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752D61A3AB879003B11EB /* AppDelegate.swift */; };
 		69F752D91A3AB879003B11EB /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752D81A3AB879003B11EB /* FirstViewController.swift */; };
 		69F752DB1A3AB879003B11EB /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752DA1A3AB879003B11EB /* SecondViewController.swift */; };
@@ -14,6 +16,7 @@
 		69F752E01A3AB879003B11EB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 69F752DF1A3AB879003B11EB /* Images.xcassets */; };
 		69F752E31A3AB879003B11EB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69F752E11A3AB879003B11EB /* LaunchScreen.xib */; };
 		69F752EF1A3AB879003B11EB /* ravelryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752EE1A3AB879003B11EB /* ravelryTests.swift */; };
+		69F752F91A3AC1BE003B11EB /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752F81A3AC1BE003B11EB /* XMLParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		69E7FAE31A3B477000CC3B35 /* RSSFeed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSSFeed.swift; sourceTree = "<group>"; };
+		69E7FAE51A3B4BA700CC3B35 /* ArticleContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleContent.swift; sourceTree = "<group>"; };
 		69F752D11A3AB879003B11EB /* ravelry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ravelry.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		69F752D51A3AB879003B11EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		69F752D61A3AB879003B11EB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -38,6 +43,7 @@
 		69F752E81A3AB879003B11EB /* ravelryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ravelryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		69F752ED1A3AB879003B11EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		69F752EE1A3AB879003B11EB /* ravelryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ravelryTests.swift; sourceTree = "<group>"; };
+		69F752F81A3AC1BE003B11EB /* XMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +89,9 @@
 				69F752D81A3AB879003B11EB /* FirstViewController.swift */,
 				69F752DA1A3AB879003B11EB /* SecondViewController.swift */,
 				69F752DC1A3AB879003B11EB /* Main.storyboard */,
+				69E7FAE31A3B477000CC3B35 /* RSSFeed.swift */,
+				69E7FAE51A3B4BA700CC3B35 /* ArticleContent.swift */,
+				69F752F81A3AC1BE003B11EB /* XMLParser.swift */,
 				69F752DF1A3AB879003B11EB /* Images.xcassets */,
 				69F752E11A3AB879003B11EB /* LaunchScreen.xib */,
 				69F752D41A3AB879003B11EB /* Supporting Files */,
@@ -215,8 +224,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				69E7FAE61A3B4BA700CC3B35 /* ArticleContent.swift in Sources */,
+				69F752F91A3AC1BE003B11EB /* XMLParser.swift in Sources */,
 				69F752DB1A3AB879003B11EB /* SecondViewController.swift in Sources */,
 				69F752D71A3AB879003B11EB /* AppDelegate.swift in Sources */,
+				69E7FAE41A3B477000CC3B35 /* RSSFeed.swift in Sources */,
 				69F752D91A3AB879003B11EB /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -409,6 +421,7 @@
 				69F752F41A3AB879003B11EB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		69F752F51A3AB879003B11EB /* Build configuration list for PBXNativeTarget "ravelryTests" */ = {
 			isa = XCConfigurationList;
@@ -417,6 +430,7 @@
 				69F752F71A3AB879003B11EB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
