@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>D5D5C24A-B198-4622-A61D-1C7807DBACC9</string>
+	<key>IDESourceControlProjectName</key>
+	<string>ravelry</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>7965E84D0018EFCD2621E1CC5EDF1FCF37F58BAC</key>
+		<string>http://github.com/kellanburket/ravelry</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ravelry.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>7965E84D0018EFCD2621E1CC5EDF1FCF37F58BAC</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>http://github.com/kellanburket/ravelry</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>7965E84D0018EFCD2621E1CC5EDF1FCF37F58BAC</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7965E84D0018EFCD2621E1CC5EDF1FCF37F58BAC</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ravelry</string>
+		</dict>
+	</array>
+</dict>
+</plist>

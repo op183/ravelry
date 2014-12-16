@@ -17,6 +17,9 @@
 		69F752E31A3AB879003B11EB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69F752E11A3AB879003B11EB /* LaunchScreen.xib */; };
 		69F752EF1A3AB879003B11EB /* ravelryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752EE1A3AB879003B11EB /* ravelryTests.swift */; };
 		69F752F91A3AC1BE003B11EB /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752F81A3AC1BE003B11EB /* XMLParser.swift */; };
+		7675B2671A3E5D0100B8EF4F /* regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7675B2661A3E5D0100B8EF4F /* regex.swift */; };
+		76DEBF251A3CDFA900240209 /* notes in Resources */ = {isa = PBXBuildFile; fileRef = 76DEBF241A3CDFA900240209 /* notes */; };
+		76DEBF271A3CE1F800240209 /* RavelryXMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DEBF261A3CE1F800240209 /* RavelryXMLParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +47,9 @@
 		69F752ED1A3AB879003B11EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		69F752EE1A3AB879003B11EB /* ravelryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ravelryTests.swift; sourceTree = "<group>"; };
 		69F752F81A3AC1BE003B11EB /* XMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParser.swift; sourceTree = "<group>"; };
+		7675B2661A3E5D0100B8EF4F /* regex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = regex.swift; sourceTree = "<group>"; };
+		76DEBF241A3CDFA900240209 /* notes */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes; sourceTree = "<group>"; };
+		76DEBF261A3CE1F800240209 /* RavelryXMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RavelryXMLParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +91,8 @@
 		69F752D31A3AB879003B11EB /* ravelry */ = {
 			isa = PBXGroup;
 			children = (
+				76DEBF261A3CE1F800240209 /* RavelryXMLParser.swift */,
+				7675B2661A3E5D0100B8EF4F /* regex.swift */,
 				69F752D61A3AB879003B11EB /* AppDelegate.swift */,
 				69F752D81A3AB879003B11EB /* FirstViewController.swift */,
 				69F752DA1A3AB879003B11EB /* SecondViewController.swift */,
@@ -92,6 +100,7 @@
 				69E7FAE31A3B477000CC3B35 /* RSSFeed.swift */,
 				69E7FAE51A3B4BA700CC3B35 /* ArticleContent.swift */,
 				69F752F81A3AC1BE003B11EB /* XMLParser.swift */,
+				76DEBF241A3CDFA900240209 /* notes */,
 				69F752DF1A3AB879003B11EB /* Images.xcassets */,
 				69F752E11A3AB879003B11EB /* LaunchScreen.xib */,
 				69F752D41A3AB879003B11EB /* Supporting Files */,
@@ -173,9 +182,11 @@
 				TargetAttributes = {
 					69F752D01A3AB879003B11EB = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = 5ANN6Y5APY;
 					};
 					69F752E71A3AB879003B11EB = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = 5ANN6Y5APY;
 						TestTargetID = 69F752D01A3AB879003B11EB;
 					};
 				};
@@ -206,6 +217,7 @@
 			files = (
 				69F752DE1A3AB879003B11EB /* Main.storyboard in Resources */,
 				69F752E31A3AB879003B11EB /* LaunchScreen.xib in Resources */,
+				76DEBF251A3CDFA900240209 /* notes in Resources */,
 				69F752E01A3AB879003B11EB /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -225,10 +237,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				69E7FAE61A3B4BA700CC3B35 /* ArticleContent.swift in Sources */,
+				7675B2671A3E5D0100B8EF4F /* regex.swift in Sources */,
 				69F752F91A3AC1BE003B11EB /* XMLParser.swift in Sources */,
 				69F752DB1A3AB879003B11EB /* SecondViewController.swift in Sources */,
 				69F752D71A3AB879003B11EB /* AppDelegate.swift in Sources */,
 				69E7FAE41A3B477000CC3B35 /* RSSFeed.swift in Sources */,
+				76DEBF271A3CE1F800240209 /* RavelryXMLParser.swift in Sources */,
 				69F752D91A3AB879003B11EB /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -372,6 +386,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -383,6 +399,7 @@
 				INFOPLIST_FILE = ravelryTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ravelry.app/ravelry";
 			};
 			name = Debug;
@@ -391,6 +408,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -398,6 +417,7 @@
 				INFOPLIST_FILE = ravelryTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ravelry.app/ravelry";
 			};
 			name = Release;

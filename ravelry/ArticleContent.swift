@@ -10,6 +10,10 @@ import UIKit
 
 class ArticleContent: UIViewController {
 
+    var url: NSURL?
+    var text: String?
+    var images: [String]?
+    
 	@IBAction func showPublishDate(sender: AnyObject) {
 	
 	}
@@ -17,7 +21,21 @@ class ArticleContent: UIViewController {
 	@IBOutlet weak var webPublishDate: UIBarButtonItem!
 
 	@IBOutlet weak var webToolbar: UIToolbar!
-	
-	@IBOutlet weak var webContentView: UIWebView!
-	
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        hideWebContentView(true)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if url != nil {
+            let request: NSURLRequest = NSURLRequest(URL: url!)
+        }
+    }
+
+    func hideWebContentView(hide: Bool) {
+        webToolbar.hidden = hide
+    }
 }
