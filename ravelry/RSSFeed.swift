@@ -51,7 +51,6 @@ class RSSFeed: UITableViewController, XMLParserDelegate {
         
         let dictionary = xmlParser.aParsedDict[indexPath.row] as Dictionary<String, String>
         let link = dictionary["link"]
-		println("Link: \(link)")
         
         
         let contentController = UIStoryboard(

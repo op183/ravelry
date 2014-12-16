@@ -14,6 +14,18 @@ func =~ (input: String, pattern: String) -> Bool {
     return input.test(pattern)
 }
 
+//infix operator % {}
+
+/*
+func % (input: String, format: CVarArgType...) -> String {
+return sprintf(input, format)
+}
+
+func sprintf(format: String, args: [CVarArgType]) -> String {
+var args2 = getVaList(args)
+return NSString(format: format, arguments: args2)
+}
+*/
 
 class RegExp {
     
@@ -32,7 +44,7 @@ class RegExp {
         var mutable = NSMutableString(capacity: capacity)
         mutable.appendString(input)
         
-        return doRegExp(pattern)!
+        return doRegExp()!
             .numberOfMatchesInString(
                 mutable,
                 options: mOptions,
@@ -48,9 +60,9 @@ class RegExp {
         var capacity = countElements(input)
         var mutable = NSMutableString(capacity: capacity)
         
-        mutable.appendString(pattern)
+        mutable.appendString(input)
         
-        return doRegExp(pattern)!
+        return doRegExp()!
             .matchesInString(
                 mutable,
                 options: mOptions,
@@ -83,16 +95,18 @@ class RegExp {
         )
         
         mutable.appendString(string)
+        println(replacement)
         
-        doRegExp(string)!.replaceMatchesInString(
+        doRegExp()!.replaceMatchesInString(
             mutable,
             options: mOptions,
             range: NSMakeRange(
                 0,
-                countElements(string)
+                capacity
             ),
-            withTemplate: replacement
+            withTemplate: self.replacement
         )
+        
         
         return mutable as String
     }
@@ -144,29 +158,12 @@ class RegExp {
         return options;
     }
     
-    func doubleEscape(mutable: NSMutableString, capacity: Int) -> String {
-        
-        var regex = doRegExp("\\([\\w])")
-        
-        regex?.replaceMatchesInString(
-            mutable,
-            options: nil,
-            range: NSMakeRange(
-                0,
-                capacity
-            ),
-            withTemplate: "\\$1"
-        )
-        
-        return mutable
-    }
-    
-    func doRegExp(string: String) -> NSRegularExpression? {
+    func doRegExp() -> NSRegularExpression? {
         
         var error: NSError?
         
         var regex = NSRegularExpression(
-            pattern: string,
+            pattern: pattern,
             options: options,
             error: &error
         )
@@ -194,8 +191,16 @@ extension String {
         return matches
     }
     
-    func trim() -> String {
-        return self.gsub("$[\\s\\t\\n ]*(.*)[\\s\\t\\n ]*", "$1")
+    func trim(_ characters: String = "") -> String {
+        return self.gsub("^[\\s\(characters)]+|[\\s\(characters)]+$", "")
+    }
+    
+    func rtrim(_ characters: String = "") -> String {
+        return self.gsub("[\\s\(characters)]+$", "")
+    }
+    
+    func ltrim(_ characters: String = "") -> String {
+        return self.gsub("^[\\s\(characters)]+", "")
     }
     
     func test(pattern: String) -> Bool {
@@ -203,4 +208,9 @@ extension String {
         return (regex.numMatches(self)! > 0) ? true : false;
     }
     
+    subscript(pattern: String, replacement: String) -> String {
+        get {
+            return gsub(pattern, replacement)
+        }
+    }
 }

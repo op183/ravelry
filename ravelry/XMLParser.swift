@@ -79,7 +79,6 @@ class XMLParser: NSObject, NSXMLParserDelegate, NSURLConnectionDelegate {
             for attr in attributeDict {
                 println("\(getTabs())\tAttribute \(attr)")
             }
-            
             ++level
         }
         
@@ -88,7 +87,7 @@ class XMLParser: NSObject, NSXMLParserDelegate, NSURLConnectionDelegate {
 	func parser(parser: NSXMLParser, foundCharacters string: String!) {
         if inParentNode && contains(cats, currentEl) {
 			foundChars += string
-		}
+        }
 	}
 
     func parser(parser: NSXMLParser, didEndElement elementName: String!, namespaceURI: String!, qualifiedName qName: String!) {
