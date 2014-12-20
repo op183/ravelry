@@ -17,7 +17,7 @@ class RavelryXMLParser: XMLParser {
         "pubDate": ""
     ]
 
-    var images = [String]?()
+    var images = [NSURL]()
     
     convenience init() {
         self.init(
@@ -27,17 +27,28 @@ class RavelryXMLParser: XMLParser {
         )
     }
     
-    func parseDescription(description: String) -> String {
-        images = description.match(";ltimg .*?src=['\"](.*?)['\"].*?(?:;gt)")
-        fields["description"] = description.gsub(";lt.*?;gt", "")
-        println("Description \(fields[description])")
+    func parseDescription(description: String) {
+        var files = description.match("<img .*?src=['\"](.*?)['\"].*?>")
         
-        if images != nil {
-            for image in images! {
-                println("Image: \(image)")
+        if files != nil {
+            for file in files! {
+                println("Image: \(file)")
+                
+                var matches: [String]? = file.match("(http|https):\\/\\/(.*?)(\\/.*)");
+                
+                if matches != nil && matches!.count == 3 {
+                    var url = NSURL(
+                        scheme: matches![0],
+                        host: matches![1],
+                        path: matches![2]
+                    )
+                    if url != nil {
+                        images.append(url!)
+                    }
+                }
             }
         }
         
-        return fields["description"]!
+        fields["description"] = description.gsub("<.*?>", "")
     }
 }

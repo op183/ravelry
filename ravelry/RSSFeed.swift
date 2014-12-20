@@ -60,8 +60,13 @@ class RSSFeed: UITableViewController, XMLParserDelegate {
             "idArticleContent"
         ) as ArticleContent
         
-        contentController.url = NSURL(string: link!)!
-        contentController.text = xmlParser.parseDescription(dictionary.description)
+        //contentController.url = NSURL(string: link!)!
+        xmlParser.parseDescription(dictionary.description)
+        
+        contentController.setTitle(dictionary["title"])
+
+        contentController.setDescription(xmlParser.fields["description"])
+        contentController.setImages(xmlParser.images)
         
         showDetailViewController(contentController, sender: self)
         

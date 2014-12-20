@@ -2,3 +2,7 @@
     You can check for protocol conformance only if your protocol is marked with the @objc attribute, as seen for the HasArea protocol above. This attribute indicates that the protocol should be exposed to Objective-C code and is described in Using Swift with Cocoa and Objective-C. Even if you are not interoperating with Objective-C, you need to mark your protocols with the @objc attribute if you want to be able to check for protocol conformance.
 
     Note also that @objc protocols can be adopted only by classes, and not by structures or enumerations. If you mark your protocol as @objc in order to check for conformance, you will be able to apply that protocol only to class types.
+
+
+
+curl -u 070C505B63E50C3BAD3D:_jP_2lOVBjSsYtC36hYacGbpjohCtzr8HSdzJBE2 https://api.ravelry.com/patterns/search.json?query=

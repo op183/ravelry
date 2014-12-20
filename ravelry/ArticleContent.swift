@@ -8,34 +8,74 @@
 
 import UIKit
 
-class ArticleContent: UIViewController {
-
-    var url: NSURL?
-    var text: String?
-    var images: [String]?
+class ArticleContent: UIViewController, NSURLConnectionDelegate {
     
-	@IBAction func showPublishDate(sender: AnyObject) {
-	
-	}
-	
-	@IBOutlet weak var webPublishDate: UIBarButtonItem!
-
-	@IBOutlet weak var webToolbar: UIToolbar!
+    
+    @IBOutlet weak var contentView: UILabel!
+    @IBOutlet weak var titleView: UILabel!
+    @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         hideWebContentView(true)
+        
+    }
+    
+    func setImages(images: [NSURL]?) {
+        println("Setting Images")
+        if images != nil {
+            for image in images! {
+                let request = NSURLRequest(URL: image)
+                let connection = NSURLConnection()
+                println("Retrieving \(image)")
+                NSURLConnection(
+                    request: request,
+                    delegate: self,
+                    startImmediately: true
+                )?.start()
+            }
+        }
+    }
+    
+    func setDescription(text: String?) {
+        if text != nil && contentView != nil {
+            contentView.text = text
+        }
+    }
+    
+    func setTitle(text: String?) {
+        if text != nil && titleView != nil {
+            titleView.text = text
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
-        if url != nil {
-            let request: NSURLRequest = NSURLRequest(URL: url!)
-        }
     }
 
     func hideWebContentView(hide: Bool) {
-        webToolbar.hidden = hide
+        //webToolbar.hidden = hide
+    }
+
+    func connection(connection: NSURLConnection, didReceiveData data: NSData) {
+        var image = UIImage(data: data)
+        
+        if image != nil {
+            var imageView = UIImageView(image: image!)
+            collectionView.addSubview(imageView)
+        }
+    }
+    
+    
+    func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
+        println("Connection Received Response")
+    }
+    
+    func connection(connection: NSURLConnection, didFailWithError error: NSError) {
+        println("Connection Failed with Error")
+    }
+    
+    func connectionDidFinishLoading(connection: NSURLConnection) {
+        println("Connection finished loading")
     }
 }

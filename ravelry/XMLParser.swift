@@ -12,7 +12,7 @@ import UIKit
     func parsingHasFinished()
 }
 
-class XMLParser: NSObject, NSXMLParserDelegate, NSURLConnectionDelegate {
+class XMLParser: NSObject, NSXMLParserDelegate {
  
     var delegate: XMLParserDelegate?
 
@@ -41,17 +41,10 @@ class XMLParser: NSObject, NSXMLParserDelegate, NSURLConnectionDelegate {
     **/
     
     func startParsingWithContentsOfURL(rssURL: NSURL) {
-        println("Start Parsing Output of \(rssURL)")
         
-        let request = NSURLRequest(URL: rssURL)
-        let connection = NSURLConnection()
-        
-        NSURLConnection(
-            request: request,
-            delegate: self,
-            startImmediately: true
-        )?.start()
-        
+        let parser: NSXMLParser? = NSXMLParser(contentsOfURL: rssURL)
+        parser?.delegate = self
+        var doesParse: Bool? = parser?.parse()
     }
 
     func getTabs() -> String {
@@ -91,10 +84,9 @@ class XMLParser: NSObject, NSXMLParserDelegate, NSURLConnectionDelegate {
 	}
 
     func parser(parser: NSXMLParser, didEndElement elementName: String!, namespaceURI: String!, qualifiedName qName: String!) {
-
+        currentDict[currentEl] = ""
         if !foundChars.isEmpty && inParentNode {
             var error: NSError?
-            
             currentDict[currentEl] = foundChars.trim()
             println("\(getTabs())Found Chars \(currentDict[currentEl])")
             foundChars = ""
@@ -153,39 +145,6 @@ class XMLParser: NSObject, NSXMLParserDelegate, NSURLConnectionDelegate {
 
     func parser(parser: NSXMLParser!, foundNotationDeclarationWithName name: String!, publicID: String!, systemID: String!) {
         println("foundNotationDeclarationWithName \(name)")
-    }
-    
-    
-    func connection(connection: NSURLConnection, didReceiveData data: NSData) {
-        let parser: NSXMLParser? = NSXMLParser(data: data)
-
-        parser?.delegate = self
-        var doesParse: Bool? = parser?.parse()
-
-        //println("Does Parse? \(doesParse)")
-        
-        //var s: String = NSString(data: data, encoding: NSUTF8StringEncoding) as String
-        //println("Connection Received Data \(s)")
-        
-        /*
-        data.enumerateByteRangesUsingBlock({
-            (bytes: UnsafePointer<Void>, byteRange: NSRange, stop: UnsafeMutablePointer<ObjCBool>) -> (Void) in
-            Stringbytes as String
-        })
-        */
-    }
-    
-    
-    func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
-        println("Connection Received Response")
-    }
-    
-    func connection(connection: NSURLConnection, didFailWithError error: NSError) {
-        println("Connection Failed with Error")
-    }
-    
-    func connectionDidFinishLoading(connection: NSURLConnection) {
-        println("Connection finished loading")
     }
     
 }

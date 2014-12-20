@@ -8,24 +8,6 @@
 
 import UIKit
 
-infix operator =~ {}
-
-func =~ (input: String, pattern: String) -> Bool {
-    return input.test(pattern)
-}
-
-//infix operator % {}
-
-/*
-func % (input: String, format: CVarArgType...) -> String {
-return sprintf(input, format)
-}
-
-func sprintf(format: String, args: [CVarArgType]) -> String {
-var args2 = getVaList(args)
-return NSString(format: format, arguments: args2)
-}
-*/
 
 class RegExp {
     
@@ -56,13 +38,14 @@ class RegExp {
         
     }
     
-    func match(input: String) -> [AnyObject]? {
+    func match(input: String) -> [String]? {
         var capacity = countElements(input)
         var mutable = NSMutableString(capacity: capacity)
+        var matches = [String]()
         
         mutable.appendString(input)
         
-        return doRegExp()!
+        var results = doRegExp()!
             .matchesInString(
                 mutable,
                 options: mOptions,
@@ -70,7 +53,26 @@ class RegExp {
                     0,
                     capacity
                 )
-        )
+            ) as [NSTextCheckingResult]
+        var numRanges: Int
+        var range: NSRange
+        
+        for result in results {
+            numRanges = result.numberOfRanges - 1
+            for i in 1...numRanges {
+                println(i)
+                range = result.rangeAtIndex(i)
+                
+                matches.insert(input.substringWithRange(
+                    Range(
+                        start: advance(input.startIndex, range.location),
+                        end: advance(input.startIndex, range.location + range.length)
+                    )
+                    ), atIndex: i - 1)
+            }
+        }
+        
+        return matches
     }
     
     
@@ -173,7 +175,59 @@ class RegExp {
     
 }
 
+let MIMEBase64Encoding: [Character] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "/"];
+
 extension String {
+    
+    var base64: String {
+        
+        var encoded: String = ""
+        var base: UInt64 = 0
+        var i: UInt64 = 0
+        var padding: String = ""
+        
+        for character in self.unicodeScalars {
+            
+            if i < 3 {
+                base = base << 8 | UInt64(character)
+                ++i
+            } else {
+                for i = 3; i > 0; --i {
+                    let bitmask: UInt64 = 0b111111 << (i * 6)
+                    encoded.append(
+                        MIMEBase64Encoding[Int((bitmask & base) >> (i * 6))]
+                    )
+                }
+                encoded.append(
+                    MIMEBase64Encoding[Int(0b111111 & base)]
+                )
+                base = UInt64(character)
+                i = 1
+            }
+        }
+        
+        let remainder = Int(3 - i)
+        for var j = 0; j < remainder; ++j {
+            padding += "="
+            base <<= 2
+        }
+        
+        let iterations: UInt64 = (remainder == 2) ? 1 : 2
+        
+        for var k: UInt64 = iterations ; k > 0; --k {
+            let bitmask: UInt64 = 0b111111 << (k * 6)
+            
+            encoded.append(
+                MIMEBase64Encoding[Int((bitmask & base) >> (k * 6))]
+            )
+        }
+        
+        encoded.append(
+            MIMEBase64Encoding[Int(0b111111 & base)]
+        )
+        
+        return encoded + padding
+    }
     
     func gsub(pattern: String, _ replacement: String) -> String {
         var regex = RegExp(pattern)
@@ -187,20 +241,19 @@ extension String {
     
     func match(pattern: String) -> [String]? {
         var regex = RegExp(pattern)
-        var matches: [String] = regex.match(self) as [String]
-        return matches
+        return regex.match(self)
     }
     
     func trim(_ characters: String = "") -> String {
-        return self.gsub("^[\\s\(characters)]+|[\\s\(characters)]+$", "")
+        return self.gsub("^[\\s\(characters)]+|[\\s\(characters)]+$", "$1")
     }
     
     func rtrim(_ characters: String = "") -> String {
-        return self.gsub("[\\s\(characters)]+$", "")
+        return self.gsub("[\\s\(characters)]+$", "$1")
     }
     
     func ltrim(_ characters: String = "") -> String {
-        return self.gsub("^[\\s\(characters)]+", "")
+        return self.gsub("^[\\s\(characters)]+", "$1")
     }
     
     func test(pattern: String) -> Bool {
