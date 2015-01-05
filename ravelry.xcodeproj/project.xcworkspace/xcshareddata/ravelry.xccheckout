@@ -10,6 +10,8 @@
 	<string>ravelry</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
+		<key>04101981B66E318109934C9516F88D824BB96459</key>
+		<string>https://github.com/ccgus/fmdb</string>
 		<key>7965E84D0018EFCD2621E1CC5EDF1FCF37F58BAC</key>
 		<string>http://github.com/kellanburket/ravelry</string>
 	</dict>
@@ -17,6 +19,8 @@
 	<string>ravelry.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
+		<key>04101981B66E318109934C9516F88D824BB96459</key>
+		<string>../../ravelry/fmdb</string>
 		<key>7965E84D0018EFCD2621E1CC5EDF1FCF37F58BAC</key>
 		<string>../..</string>
 	</dict>
@@ -28,6 +32,14 @@
 	<string>7965E84D0018EFCD2621E1CC5EDF1FCF37F58BAC</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>04101981B66E318109934C9516F88D824BB96459</string>
+			<key>IDESourceControlWCCName</key>
+			<string>fmdb</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

@@ -14,7 +14,6 @@ class RSSFeed: UITableViewController, XMLParserDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        println("RSS Controller Did Load");
         let url = NSURL(string: "http://www.ravelry.com/projects/klakitties.rss")
         xmlParser = RavelryXMLParser()
         xmlParser.delegate = self

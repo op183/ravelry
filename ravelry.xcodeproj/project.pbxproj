@@ -10,17 +10,49 @@
 		69E7FAE41A3B477000CC3B35 /* RSSFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E7FAE31A3B477000CC3B35 /* RSSFeed.swift */; };
 		69E7FAE61A3B4BA700CC3B35 /* ArticleContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E7FAE51A3B4BA700CC3B35 /* ArticleContent.swift */; };
 		69F752D71A3AB879003B11EB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752D61A3AB879003B11EB /* AppDelegate.swift */; };
-		69F752D91A3AB879003B11EB /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752D81A3AB879003B11EB /* FirstViewController.swift */; };
-		69F752DB1A3AB879003B11EB /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752DA1A3AB879003B11EB /* SecondViewController.swift */; };
+		69F752D91A3AB879003B11EB /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752D81A3AB879003B11EB /* HomeViewController.swift */; };
+		69F752DB1A3AB879003B11EB /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752DA1A3AB879003B11EB /* SearchViewController.swift */; };
 		69F752DE1A3AB879003B11EB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69F752DC1A3AB879003B11EB /* Main.storyboard */; };
 		69F752E01A3AB879003B11EB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 69F752DF1A3AB879003B11EB /* Images.xcassets */; };
 		69F752E31A3AB879003B11EB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69F752E11A3AB879003B11EB /* LaunchScreen.xib */; };
 		69F752EF1A3AB879003B11EB /* ravelryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752EE1A3AB879003B11EB /* ravelryTests.swift */; };
 		69F752F91A3AC1BE003B11EB /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F752F81A3AC1BE003B11EB /* XMLParser.swift */; };
+		760F38CC1A50A06E00509348 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760F38CB1A50A06E00509348 /* Photo.swift */; };
+		760F38CE1A50EBFB00509348 /* SearchResultsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760F38CD1A50EBFB00509348 /* SearchResultsParser.swift */; };
 		762F7C421A41502B003274DB /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762F7C411A41502B003274DB /* JSONParser.swift */; };
-		7675B2671A3E5D0100B8EF4F /* regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7675B2661A3E5D0100B8EF4F /* regex.swift */; };
-		7680CBE31A43FB8900035C58 /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680CBE21A43FB8900035C58 /* SearchResults.swift */; };
-		76DEBF251A3CDFA900240209 /* notes in Resources */ = {isa = PBXBuildFile; fileRef = 76DEBF241A3CDFA900240209 /* notes */; };
+		765021B41A574B7200315E26 /* Ravelry.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 765021B21A574B7200315E26 /* Ravelry.xcdatamodeld */; };
+		765021B61A574DA200315E26 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765021B51A574DA200315E26 /* CoreDataManager.swift */; };
+		7650224C1A57828700315E26 /* DialogueController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650224B1A57828700315E26 /* DialogueController.swift */; };
+		7650224E1A586B1200315E26 /* TextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650224D1A586B1200315E26 /* TextInput.swift */; };
+		765022531A588E8A00315E26 /* OAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765022521A588E8A00315E26 /* OAuthService.swift */; };
+		7650225B1A58C87A00315E26 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650225A1A58C87A00315E26 /* User.swift */; };
+		7650225D1A58C87B00315E26 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650225C1A58C87B00315E26 /* Setting.swift */; };
+		7650225F1A58D08100315E26 /* Hmac.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650225E1A58D08100315E26 /* Hmac.swift */; };
+		765899911A467F6C00230E75 /* Pattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765899901A467F6C00230E75 /* Pattern.swift */; };
+		765899931A46816E00230E75 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765899921A46816E00230E75 /* Author.swift */; };
+		765899951A46818B00230E75 /* Mipmap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765899941A46818B00230E75 /* Mipmap.swift */; };
+		765899991A4681F800230E75 /* PatternSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765899981A4681F800230E75 /* PatternSource.swift */; };
+		765A3F681A46829900F361DD /* BaseRavelryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765A3F671A46829900F361DD /* BaseRavelryModel.swift */; };
+		765A3F6B1A469B6100F361DD /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765A3F6A1A469B6100F361DD /* SearchResult.swift */; };
+		765A3F701A46C66F00F361DD /* Http.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765A3F6F1A46C66F00F361DD /* Http.swift */; };
+		766EEB071A520FD00086F69A /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766EEB061A520FD00086F69A /* Debug.swift */; };
+		7675B2671A3E5D0100B8EF4F /* RegExp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7675B2661A3E5D0100B8EF4F /* RegExp.swift */; };
+		7680CBE31A43FB8900035C58 /* SearchResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680CBE21A43FB8900035C58 /* SearchResultsController.swift */; };
+		76AED5021A52591C0065076F /* PatternViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AED5011A52591C0065076F /* PatternViewController.swift */; };
+		76AED5051A526EDA0065076F /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AED5041A526EDA0065076F /* Config.swift */; };
+		76AED5071A5272C10065076F /* PatternParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AED5061A5272C10065076F /* PatternParser.swift */; };
+		76AED5091A527AA20065076F /* Needle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AED5081A527AA20065076F /* Needle.swift */; };
+		76AED50B1A527DE00065076F /* Yarn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AED50A1A527DE00065076F /* Yarn.swift */; };
+		76AED50D1A53C1AF0065076F /* SearchNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AED50C1A53C1AF0065076F /* SearchNavigator.swift */; };
+		76AED50F1A5498D60065076F /* BaseRavelryNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AED50E1A5498D60065076F /* BaseRavelryNavigationController.swift */; };
+		76AED5251A54D1590065076F /* BebasNeue Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 76AED5241A54D1520065076F /* BebasNeue Bold.otf */; };
+		76AED52A1A54D1990065076F /* BebasNeue Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = 76AED5261A54D18A0065076F /* BebasNeue Book.otf */; };
+		76AED52B1A54D1990065076F /* BebasNeue Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 76AED5271A54D18A0065076F /* BebasNeue Light.otf */; };
+		76AED52C1A54D1990065076F /* BebasNeue Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 76AED5281A54D18A0065076F /* BebasNeue Regular.otf */; };
+		76AED52F1A55F52F0065076F /* SIMPLIFICA Typeface.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 76AED52E1A55F4FB0065076F /* SIMPLIFICA Typeface.ttf */; };
+		76AED5301A55F5300065076F /* SIMPLIFICA Typeface.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 76AED52E1A55F4FB0065076F /* SIMPLIFICA Typeface.ttf */; };
+		76AED5321A55FBFD0065076F /* SprintF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AED5311A55FBFD0065076F /* SprintF.swift */; };
+		76AED5381A5627240065076F /* BaseRavelryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AED5371A5627240065076F /* BaseRavelryTableViewController.swift */; };
 		76DEBF271A3CE1F800240209 /* RavelryXMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DEBF261A3CE1F800240209 /* RavelryXMLParser.swift */; };
 /* End PBXBuildFile section */
 
@@ -40,8 +72,8 @@
 		69F752D11A3AB879003B11EB /* ravelry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ravelry.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		69F752D51A3AB879003B11EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		69F752D61A3AB879003B11EB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		69F752D81A3AB879003B11EB /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
-		69F752DA1A3AB879003B11EB /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		69F752D81A3AB879003B11EB /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		69F752DA1A3AB879003B11EB /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		69F752DD1A3AB879003B11EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		69F752DF1A3AB879003B11EB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		69F752E21A3AB879003B11EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -49,9 +81,47 @@
 		69F752ED1A3AB879003B11EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		69F752EE1A3AB879003B11EB /* ravelryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ravelryTests.swift; sourceTree = "<group>"; };
 		69F752F81A3AC1BE003B11EB /* XMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParser.swift; sourceTree = "<group>"; };
+		760F38CB1A50A06E00509348 /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		760F38CD1A50EBFB00509348 /* SearchResultsParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsParser.swift; sourceTree = "<group>"; };
 		762F7C411A41502B003274DB /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
-		7675B2661A3E5D0100B8EF4F /* regex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = regex.swift; sourceTree = "<group>"; };
-		7680CBE21A43FB8900035C58 /* SearchResults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
+		765021B31A574B7200315E26 /* Ravelry.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Ravelry.xcdatamodel; sourceTree = "<group>"; };
+		765021B51A574DA200315E26 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		7650224B1A57828700315E26 /* DialogueController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogueController.swift; sourceTree = "<group>"; };
+		7650224D1A586B1200315E26 /* TextInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextInput.swift; sourceTree = "<group>"; };
+		7650224F1A587C6400315E26 /* Ravelry 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Ravelry 3.xcdatamodel"; sourceTree = "<group>"; };
+		765022501A5886B900315E26 /* Ravelry 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Ravelry 4.xcdatamodel"; sourceTree = "<group>"; };
+		765022521A588E8A00315E26 /* OAuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthService.swift; sourceTree = "<group>"; };
+		7650225A1A58C87A00315E26 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		7650225C1A58C87B00315E26 /* Setting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
+		7650225E1A58D08100315E26 /* Hmac.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hmac.swift; sourceTree = "<group>"; };
+		7654CF571A57240600992828 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
+		765899901A467F6C00230E75 /* Pattern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pattern.swift; sourceTree = "<group>"; };
+		765899921A46816E00230E75 /* Author.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Author.swift; sourceTree = "<group>"; };
+		765899941A46818B00230E75 /* Mipmap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mipmap.swift; sourceTree = "<group>"; };
+		765899981A4681F800230E75 /* PatternSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PatternSource.swift; path = ../PatternSource.swift; sourceTree = "<group>"; };
+		765A3F671A46829900F361DD /* BaseRavelryModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseRavelryModel.swift; sourceTree = "<group>"; };
+		765A3F6A1A469B6100F361DD /* SearchResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
+		765A3F6F1A46C66F00F361DD /* Http.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Http.swift; sourceTree = "<group>"; };
+		766EEB061A520FD00086F69A /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
+		7675B2661A3E5D0100B8EF4F /* RegExp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegExp.swift; sourceTree = "<group>"; };
+		7680CBE21A43FB8900035C58 /* SearchResultsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsController.swift; sourceTree = "<group>"; };
+		76A33D621A56FCF900A59BC2 /* ravelry */ = {isa = PBXFileReference; lastKnownFileType = file; path = ravelry; sourceTree = "<group>"; };
+		76AED5011A52591C0065076F /* PatternViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatternViewController.swift; sourceTree = "<group>"; };
+		76AED5041A526EDA0065076F /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		76AED5061A5272C10065076F /* PatternParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatternParser.swift; sourceTree = "<group>"; };
+		76AED5081A527AA20065076F /* Needle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Needle.swift; sourceTree = "<group>"; };
+		76AED50A1A527DE00065076F /* Yarn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Yarn.swift; sourceTree = "<group>"; };
+		76AED50C1A53C1AF0065076F /* SearchNavigator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchNavigator.swift; sourceTree = "<group>"; };
+		76AED50E1A5498D60065076F /* BaseRavelryNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseRavelryNavigationController.swift; sourceTree = "<group>"; };
+		76AED5241A54D1520065076F /* BebasNeue Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BebasNeue Bold.otf"; sourceTree = "<group>"; };
+		76AED5261A54D18A0065076F /* BebasNeue Book.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BebasNeue Book.otf"; sourceTree = "<group>"; };
+		76AED5271A54D18A0065076F /* BebasNeue Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BebasNeue Light.otf"; sourceTree = "<group>"; };
+		76AED5281A54D18A0065076F /* BebasNeue Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BebasNeue Regular.otf"; sourceTree = "<group>"; };
+		76AED5291A54D18A0065076F /* BebasNeue Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BebasNeue Thin.otf"; sourceTree = "<group>"; };
+		76AED52E1A55F4FB0065076F /* SIMPLIFICA Typeface.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SIMPLIFICA Typeface.ttf"; sourceTree = "<group>"; };
+		76AED5311A55FBFD0065076F /* SprintF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprintF.swift; sourceTree = "<group>"; };
+		76AED5331A5605E30065076F /* ravelry-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ravelry-Bridging-Header.h"; sourceTree = "<group>"; };
+		76AED5371A5627240065076F /* BaseRavelryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseRavelryTableViewController.swift; sourceTree = "<group>"; };
 		76DEBF241A3CDFA900240209 /* notes */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes; sourceTree = "<group>"; };
 		76DEBF261A3CE1F800240209 /* RavelryXMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RavelryXMLParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -77,6 +147,9 @@
 		69F752C81A3AB879003B11EB = {
 			isa = PBXGroup;
 			children = (
+				7650225C1A58C87B00315E26 /* Setting.swift */,
+				7650225A1A58C87A00315E26 /* User.swift */,
+				7654CF571A57240600992828 /* libsqlite3.dylib */,
 				69F752D31A3AB879003B11EB /* ravelry */,
 				69F752EB1A3AB879003B11EB /* ravelryTests */,
 				69F752D21A3AB879003B11EB /* Products */,
@@ -95,17 +168,21 @@
 		69F752D31A3AB879003B11EB /* ravelry */ = {
 			isa = PBXGroup;
 			children = (
+				765022511A588E7900315E26 /* services */,
+				76A33D641A56FD1600A59BC2 /* db */,
+				76AED5031A525A140065076F /* controllers */,
+				76FE98B11A510069000F1E4B /* resources */,
+				765A3F6C1A469C9F00F361DD /* views */,
+				765A3F691A46830700F361DD /* lib */,
+				765A3F661A46826100F361DD /* models */,
 				76DEBF261A3CE1F800240209 /* RavelryXMLParser.swift */,
-				7675B2661A3E5D0100B8EF4F /* regex.swift */,
+				76AED5041A526EDA0065076F /* Config.swift */,
+				765021B51A574DA200315E26 /* CoreDataManager.swift */,
 				69F752D61A3AB879003B11EB /* AppDelegate.swift */,
-				69F752D81A3AB879003B11EB /* FirstViewController.swift */,
-				69F752DA1A3AB879003B11EB /* SecondViewController.swift */,
+				765021B21A574B7200315E26 /* Ravelry.xcdatamodeld */,
 				69F752DC1A3AB879003B11EB /* Main.storyboard */,
-				69E7FAE31A3B477000CC3B35 /* RSSFeed.swift */,
-				7680CBE21A43FB8900035C58 /* SearchResults.swift */,
-				69E7FAE51A3B4BA700CC3B35 /* ArticleContent.swift */,
-				762F7C411A41502B003274DB /* JSONParser.swift */,
-				69F752F81A3AC1BE003B11EB /* XMLParser.swift */,
+				760F38CD1A50EBFB00509348 /* SearchResultsParser.swift */,
+				76AED5061A5272C10065076F /* PatternParser.swift */,
 				76DEBF241A3CDFA900240209 /* notes */,
 				69F752DF1A3AB879003B11EB /* Images.xcassets */,
 				69F752E11A3AB879003B11EB /* LaunchScreen.xib */,
@@ -137,6 +214,99 @@
 				69F752ED1A3AB879003B11EB /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		765022511A588E7900315E26 /* services */ = {
+			isa = PBXGroup;
+			children = (
+				765022521A588E8A00315E26 /* OAuthService.swift */,
+			);
+			name = services;
+			sourceTree = "<group>";
+		};
+		765A3F661A46826100F361DD /* models */ = {
+			isa = PBXGroup;
+			children = (
+				765899901A467F6C00230E75 /* Pattern.swift */,
+				765899981A4681F800230E75 /* PatternSource.swift */,
+				76AED5081A527AA20065076F /* Needle.swift */,
+				765899921A46816E00230E75 /* Author.swift */,
+				76AED50A1A527DE00065076F /* Yarn.swift */,
+				765899941A46818B00230E75 /* Mipmap.swift */,
+				760F38CB1A50A06E00509348 /* Photo.swift */,
+				765A3F671A46829900F361DD /* BaseRavelryModel.swift */,
+			);
+			name = models;
+			sourceTree = "<group>";
+		};
+		765A3F691A46830700F361DD /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				69F752F81A3AC1BE003B11EB /* XMLParser.swift */,
+				762F7C411A41502B003274DB /* JSONParser.swift */,
+				766EEB061A520FD00086F69A /* Debug.swift */,
+				7675B2661A3E5D0100B8EF4F /* RegExp.swift */,
+				76AED5311A55FBFD0065076F /* SprintF.swift */,
+				765A3F6F1A46C66F00F361DD /* Http.swift */,
+				7650225E1A58D08100315E26 /* Hmac.swift */,
+				76AED5331A5605E30065076F /* ravelry-Bridging-Header.h */,
+			);
+			name = lib;
+			sourceTree = "<group>";
+		};
+		765A3F6C1A469C9F00F361DD /* views */ = {
+			isa = PBXGroup;
+			children = (
+				7650224D1A586B1200315E26 /* TextInput.swift */,
+				765A3F6A1A469B6100F361DD /* SearchResult.swift */,
+			);
+			name = views;
+			sourceTree = "<group>";
+		};
+		76A33D641A56FD1600A59BC2 /* db */ = {
+			isa = PBXGroup;
+			children = (
+				76A33D621A56FCF900A59BC2 /* ravelry */,
+			);
+			name = db;
+			sourceTree = "<group>";
+		};
+		76AED5031A525A140065076F /* controllers */ = {
+			isa = PBXGroup;
+			children = (
+				7680CBE21A43FB8900035C58 /* SearchResultsController.swift */,
+				69E7FAE31A3B477000CC3B35 /* RSSFeed.swift */,
+				69E7FAE51A3B4BA700CC3B35 /* ArticleContent.swift */,
+				69F752D81A3AB879003B11EB /* HomeViewController.swift */,
+				7650224B1A57828700315E26 /* DialogueController.swift */,
+				76AED50C1A53C1AF0065076F /* SearchNavigator.swift */,
+				69F752DA1A3AB879003B11EB /* SearchViewController.swift */,
+				76AED5011A52591C0065076F /* PatternViewController.swift */,
+				76AED50E1A5498D60065076F /* BaseRavelryNavigationController.swift */,
+				76AED5371A5627240065076F /* BaseRavelryTableViewController.swift */,
+			);
+			name = controllers;
+			sourceTree = "<group>";
+		};
+		76FE98B11A510069000F1E4B /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				76FE98B21A510071000F1E4B /* fonts */,
+			);
+			name = resources;
+			sourceTree = "<group>";
+		};
+		76FE98B21A510071000F1E4B /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				76AED52E1A55F4FB0065076F /* SIMPLIFICA Typeface.ttf */,
+				76AED5261A54D18A0065076F /* BebasNeue Book.otf */,
+				76AED5271A54D18A0065076F /* BebasNeue Light.otf */,
+				76AED5281A54D18A0065076F /* BebasNeue Regular.otf */,
+				76AED5291A54D18A0065076F /* BebasNeue Thin.otf */,
+				76AED5241A54D1520065076F /* BebasNeue Bold.otf */,
+			);
+			name = fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -221,9 +391,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76AED52A1A54D1990065076F /* BebasNeue Book.otf in Resources */,
+				76AED52B1A54D1990065076F /* BebasNeue Light.otf in Resources */,
+				76AED52C1A54D1990065076F /* BebasNeue Regular.otf in Resources */,
+				76AED52F1A55F52F0065076F /* SIMPLIFICA Typeface.ttf in Resources */,
+				76AED5251A54D1590065076F /* BebasNeue Bold.otf in Resources */,
 				69F752DE1A3AB879003B11EB /* Main.storyboard in Resources */,
 				69F752E31A3AB879003B11EB /* LaunchScreen.xib in Resources */,
-				76DEBF251A3CDFA900240209 /* notes in Resources */,
 				69F752E01A3AB879003B11EB /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -232,6 +406,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76AED5301A55F5300065076F /* SIMPLIFICA Typeface.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,15 +418,42 @@
 			buildActionMask = 2147483647;
 			files = (
 				69E7FAE61A3B4BA700CC3B35 /* ArticleContent.swift in Sources */,
-				7675B2671A3E5D0100B8EF4F /* regex.swift in Sources */,
-				7680CBE31A43FB8900035C58 /* SearchResults.swift in Sources */,
+				766EEB071A520FD00086F69A /* Debug.swift in Sources */,
+				765A3F681A46829900F361DD /* BaseRavelryModel.swift in Sources */,
+				76AED5381A5627240065076F /* BaseRavelryTableViewController.swift in Sources */,
+				765A3F6B1A469B6100F361DD /* SearchResult.swift in Sources */,
+				76AED5091A527AA20065076F /* Needle.swift in Sources */,
+				7675B2671A3E5D0100B8EF4F /* RegExp.swift in Sources */,
+				765021B41A574B7200315E26 /* Ravelry.xcdatamodeld in Sources */,
+				7680CBE31A43FB8900035C58 /* SearchResultsController.swift in Sources */,
 				762F7C421A41502B003274DB /* JSONParser.swift in Sources */,
 				69F752F91A3AC1BE003B11EB /* XMLParser.swift in Sources */,
-				69F752DB1A3AB879003B11EB /* SecondViewController.swift in Sources */,
+				765899991A4681F800230E75 /* PatternSource.swift in Sources */,
+				69F752DB1A3AB879003B11EB /* SearchViewController.swift in Sources */,
+				7650225B1A58C87A00315E26 /* User.swift in Sources */,
+				7650224E1A586B1200315E26 /* TextInput.swift in Sources */,
+				76AED5071A5272C10065076F /* PatternParser.swift in Sources */,
+				765899951A46818B00230E75 /* Mipmap.swift in Sources */,
+				765A3F701A46C66F00F361DD /* Http.swift in Sources */,
+				765899931A46816E00230E75 /* Author.swift in Sources */,
+				760F38CE1A50EBFB00509348 /* SearchResultsParser.swift in Sources */,
+				76AED50F1A5498D60065076F /* BaseRavelryNavigationController.swift in Sources */,
+				760F38CC1A50A06E00509348 /* Photo.swift in Sources */,
+				7650225F1A58D08100315E26 /* Hmac.swift in Sources */,
+				7650224C1A57828700315E26 /* DialogueController.swift in Sources */,
+				76AED5051A526EDA0065076F /* Config.swift in Sources */,
+				765022531A588E8A00315E26 /* OAuthService.swift in Sources */,
 				69F752D71A3AB879003B11EB /* AppDelegate.swift in Sources */,
+				7650225D1A58C87B00315E26 /* Setting.swift in Sources */,
+				765899911A467F6C00230E75 /* Pattern.swift in Sources */,
 				69E7FAE41A3B477000CC3B35 /* RSSFeed.swift in Sources */,
+				76AED50B1A527DE00065076F /* Yarn.swift in Sources */,
 				76DEBF271A3CE1F800240209 /* RavelryXMLParser.swift in Sources */,
-				69F752D91A3AB879003B11EB /* FirstViewController.swift in Sources */,
+				69F752D91A3AB879003B11EB /* HomeViewController.swift in Sources */,
+				765021B61A574DA200315E26 /* CoreDataManager.swift in Sources */,
+				76AED5021A52591C0065076F /* PatternViewController.swift in Sources */,
+				76AED5321A55FBFD0065076F /* SprintF.swift in Sources */,
+				76AED50D1A53C1AF0065076F /* SearchNavigator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,9 +576,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = ravelry/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ravelry/ravelry-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -384,9 +593,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = ravelry/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ravelry/ravelry-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -461,6 +675,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		765021B21A574B7200315E26 /* Ravelry.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				765022501A5886B900315E26 /* Ravelry 4.xcdatamodel */,
+				7650224F1A587C6400315E26 /* Ravelry 3.xcdatamodel */,
+				765021B31A574B7200315E26 /* Ravelry.xcdatamodel */,
+			);
+			currentVersion = 765022501A5886B900315E26 /* Ravelry 4.xcdatamodel */;
+			path = Ravelry.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 69F752C91A3AB879003B11EB /* Project object */;
 }

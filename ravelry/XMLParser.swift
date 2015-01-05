@@ -68,9 +68,9 @@ class XMLParser: NSObject, NSXMLParserDelegate {
         }
         
         if inParentNode {
-            println("\(getTabs())Starting Element: \(elementName)")
+            //println("\(getTabs())Starting Element: \(elementName)")
             for attr in attributeDict {
-                println("\(getTabs())\tAttribute \(attr)")
+                //println("\(getTabs())\tAttribute \(attr)")
             }
             ++level
         }
@@ -88,16 +88,16 @@ class XMLParser: NSObject, NSXMLParserDelegate {
         if !foundChars.isEmpty && inParentNode {
             var error: NSError?
             currentDict[currentEl] = foundChars.trim()
-            println("\(getTabs())Found Chars \(currentDict[currentEl])")
+            //println("\(getTabs())Found Chars \(currentDict[currentEl])")
             foundChars = ""
         }
 
         if inParentNode {
             --level
-            println("\(getTabs())Ending Element: \(elementName)")
+            //println("\(getTabs())Ending Element: \(elementName)")
             
             if elementName == node {
-                println("Saving Node: \(node)")
+                //println("Saving Node: \(node)")
                 aParsedDict.append(currentDict)
                 currentDict = Dictionary<String, String>()
             }

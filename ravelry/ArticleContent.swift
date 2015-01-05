@@ -22,17 +22,17 @@ class ArticleContent: UIViewController, NSURLConnectionDelegate {
     }
     
     func setImages(images: [NSURL]?) {
-        println("Setting Images")
+        //println("Setting Images")
         if images != nil {
             for image in images! {
                 let request = NSURLRequest(URL: image)
                 let connection = NSURLConnection()
-                println("Retrieving \(image)")
+                //println("Retrieving \(image)")
                 NSURLConnection(
                     request: request,
                     delegate: self,
                     startImmediately: true
-                )?.start()
+                )
             }
         }
     }

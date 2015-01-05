@@ -32,8 +32,6 @@ class RavelryXMLParser: XMLParser {
         
         if files != nil {
             for file in files! {
-                println("Image: \(file)")
-                
                 var matches: [String]? = file.match("(http|https):\\/\\/(.*?)(\\/.*)");
                 
                 if matches != nil && matches!.count == 3 {

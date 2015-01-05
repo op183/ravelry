@@ -8,69 +8,59 @@
 
 import UIKit
 
-@objc protocol JSONParserDelegate {
+class JSONParser<T>: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDelegate, AsyncLoaderDelegate {
     
-}
-
-class JSONParser: NSObject, NSURLConnectionDelegate {
-    
-    var delegate: JSONParserDelegate?
-    let encodedAuth = "070C505B63E50C3BAD3D:_jP_2lOVBjSsYtC36hYacGbpjohCtzr8HSdzJBE2".base64
+    var loaderDelegate: AsyncLoaderDelegate?
     
     override init() {
         super.init()
     }
-    
-    func parse(url: NSURL) {
+
+    init(delegate: AsyncLoaderDelegate) {
+        super.init()
+        loaderDelegate = delegate
+    }
+
+
+    func parse(url: NSURL, username: String, password: String) {
         let request = NSMutableURLRequest(URL: url)
-        request.addValue("Basic \(encodedAuth)", forHTTPHeaderField: "Authorization")
+        let encodedAuth = "Basic " + "\(username):\(password)".base64;
         
-        let connection = NSURLConnection()
+        request.addValue(encodedAuth, forHTTPHeaderField: "Authorization")
         
-        NSURLConnection(
-            request: request,
-            delegate: self,
-            startImmediately: true
-            )?.start()
-    }
+        NSURLConnection.sendAsynchronousRequest(
+            request,
+            queue: NSOperationQueue.mainQueue()
+        ) { (response, data, error) in
 
-    func connection(connection: NSURLConnection, didReceiveData data: NSData) {
-
-        //var s: String = NSString(data: data, encoding: NSUTF8StringEncoding) as String
-        //println("Connection Received Data \(s)")
-
-        var parseError: NSError?
-        //NSJSONReadingOptions.AllowFragments | NSJSONReadingOptions.MutableContainers | NSJSONReadingOptions.MutableLeaves
-        if let json = NSJSONSerialization.JSONObjectWithData(
-            data,
-            options: nil,
-            error: &parseError
-            ) as? NSDictionary {
-                
-                if let patterns = json["patterns"] as? NSArray {
-                    for pattern in patterns {
-                        println(pattern.name)
-                    }
+            var parseError: NSError?
+            if data != nil {
+                if let json = NSJSONSerialization.JSONObjectWithData(
+                    data,
+                    options: nil, //NSJSONReadingOptions.AllowFragments | NSJSONReadingOptions.MutableContainers | NSJSONReadingOptions.MutableLeaves
+                    error: &parseError
+                    ) as? NSDictionary {
+                        self.parse(json)
+                } else {
+                    println("Could Not Initialize JSON Data: \(parseError)")
                 }
-        } else {
-            println("Could Not Initialize JSON Data: \(parseError)")
+            } else {
+                println("No data returned from server: \(error)")
+            }
+            
         }
+    }
         
-        //println(parsedObject)
+    func parse(json: NSDictionary) {
         
     }
     
-    
-    func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
-        println("Connection Received Response")
+    func readFullString(data: NSData) {
+        var s: String = NSString(data: data, encoding: NSUTF8StringEncoding) as String
+        println("Connection Received Data \(s)")
     }
     
-    func connection(connection: NSURLConnection, didFailWithError error: NSError) {
-        println("Connection Failed with Error")
+    func loadComplete(object: AnyObject) {
+        loaderDelegate?.loadComplete(self)
     }
-    
-    func connectionDidFinishLoading(connection: NSURLConnection) {
-        println("Connection finished loading")
-    }
-    
 }
