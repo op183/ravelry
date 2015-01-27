@@ -17,7 +17,19 @@ class CoreDataManager {
         self.managedContext = context.managedObjectContext!
     }
 
-    func fetch(entity: String) -> [AnyObject]? {
+    func delete(entity: String, index: Int) -> Bool {
+        var data = fetch(entity)
+        if data != nil {
+            managedContext.deleteObject(data![index])
+            data!.removeAtIndex(index)
+            managedContext.save(nil)
+            return true
+        }
+        
+        return false
+    }
+    
+    func fetch(entity: String) -> [NSManagedObject]? {
         var request = NSFetchRequest(entityName: entity)
         var error: NSError?
         var results = managedContext.executeFetchRequest(
@@ -25,9 +37,10 @@ class CoreDataManager {
             error: &error
         ) as [NSManagedObject]?
 
-        if let entities = results {
-            if entities.count > 0 {
-                return entities as [AnyObject]
+        var entities = results;
+        if entities != nil {
+            if entities!.count > 0 {
+                return entities! as [NSManagedObject]
             } else {
                 println("Could Not Fetch \(entity)")
                 return nil
@@ -40,21 +53,28 @@ class CoreDataManager {
     
     func first(entity: String) -> AnyObject? {
         if let result = fetch(entity) {
-            println("Fetched \(result[0])")
+            println("Fetched \(entity)")
             return result[0]
         } else {
             return nil
         }
     }
     
-    func insert(entity: String, attributes: [String: AnyObject]) -> NSObject? {
-        var entity = NSEntityDescription.insertNewObjectForEntityForName(
+    func save(entity: String, _ attributes: [String: AnyObject]) -> NSManagedObject? {
+        
+        var entity = NSEntityDescription.entityForName(
             entity,
             inManagedObjectContext: self.managedContext
-        ) as NSObject
+        )
 
+        let object = NSManagedObject(
+            entity: entity!,
+            insertIntoManagedObjectContext: self.managedContext
+        )
+        
         for (key, attr) in attributes {
-            entity.setValue(attr, forKey: key)
+            println("\(entity), \(key) : \(attr)")
+            object.setValue(attr, forKey: key)
         }
         
         var error: NSError?
@@ -64,6 +84,6 @@ class CoreDataManager {
             return nil
         }
         
-        return entity
+        return object
     }
 }

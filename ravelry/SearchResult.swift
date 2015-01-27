@@ -9,6 +9,7 @@
 import UIKit
 
 class SearchResult: UITableViewCell, UIGestureRecognizerDelegate {
+    
     @IBOutlet weak var cellLabel: UILabel!
     @IBOutlet weak var cellImage: UIImageView!
     

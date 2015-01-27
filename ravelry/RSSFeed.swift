@@ -35,9 +35,7 @@ class RSSFeed: UITableViewController, XMLParserDelegate {
 
         let currentDict = xmlParser.aParsedDict[indexPath.row] as Dictionary<String, String>
     
-        cell.textLabel.text = currentDict["title"]
- 
-        println("Table Cell Text: \(cell.textLabel.text)")
+        cell.textLabel!.text = currentDict["title"]
         
         return cell
     }

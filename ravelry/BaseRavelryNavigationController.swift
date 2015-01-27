@@ -10,7 +10,7 @@ import UIKit
 
 class BaseRavelryNavigationController: UIViewController {
 
-    
+    var lastViewController: UIViewController?
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -31,8 +31,8 @@ class BaseRavelryNavigationController: UIViewController {
         let backButton = UIBarButtonItem(
             title: "<",
             style: UIBarButtonItemStyle.Plain,
-            target: nil,
-            action: nil
+            target: self,
+            action: Selector("navigateBack:")
         )
         
         backButton.setTitleTextAttributes(
@@ -42,8 +42,14 @@ class BaseRavelryNavigationController: UIViewController {
             ],
             forState: UIControlState.Normal
         )
+        
+        
         navigationItem.setLeftBarButtonItem(backButton, animated: true)
         //navigationItem.backBarButtonItem = backButton
+    }
+    
+    @IBAction func navigateBack(sender: AnyObject) {
+        navigationController?.popViewControllerAnimated(true)
     }
 
 }

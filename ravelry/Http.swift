@@ -28,15 +28,28 @@ class Http {
     
     class func request(url: NSURL?, handler: (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void) {
         if url != nil {
-            self.request(url, headers: nil, handler: handler)
+            self.request(
+                url,
+                headers: nil,
+                handler: handler
+            )
         }
     }
 
     class func request(url: NSURL?, headers: [String: String]?, handler: (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void) {
+        self.request(
+            url,
+            headers: headers,
+            params: nil,
+            handler: handler
+        )
+    }
+    
+    class func request(url: NSURL?, headers: [String: String]?, params: [String:String]?, handler: (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void, method: String = "GET") {
         if url != nil {
             
             var request = NSMutableURLRequest(URL: url!)
-            
+            request.HTTPMethod = method
             if headers != nil {
                 for (key, value) in headers! {
                     request.addValue(value, forHTTPHeaderField: key)
@@ -52,12 +65,25 @@ class Http {
         }
     }
     
-    class func post() {
-        
+    class func post(URL: String, params: [String:String]?, handler: (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void) {
+        self.request(
+            NSURL(string: URL),
+            headers: nil,
+            params: params,
+            handler: handler,
+            method: "POST"
+        )
     }
     
-    class func get() {
-        
+    
+    class func get(URL: String, params: [String:String]?, handler: (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void) {
+        self.request(
+            NSURL(string: URL),
+            headers: nil,
+            params: params,
+            handler: handler,
+            method: "GET"
+        )
     }
     
     class func delete() {

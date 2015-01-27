@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class DialogueController {
 
     var controller: UIAlertController?
@@ -23,7 +24,6 @@ class DialogueController {
     func addTextField(#placeholder: String, isSecure: Bool) {
         func setTextField(textField: UITextField!) {
             textField.placeholder = placeholder
-            //textField.font = basalFont
             textField.secureTextEntry = isSecure
         }
         
@@ -33,9 +33,19 @@ class DialogueController {
     func addAction(title: String, handler: (action:UIAlertAction!) -> Void) {
         controller!.addAction(
             UIAlertAction(
-                title: "Go",
+                title: title,
                 style: UIAlertActionStyle.Default,
                 handler: handler
+            )
+        )
+    }
+    
+    func addCancelAction() {
+        controller!.addAction(
+            UIAlertAction(
+                title: "Cancel",
+                style: UIAlertActionStyle.Cancel,
+                handler: nil
             )
         )
     }

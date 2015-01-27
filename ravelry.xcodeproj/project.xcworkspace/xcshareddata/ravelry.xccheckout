@@ -14,6 +14,8 @@
 		<string>https://github.com/ccgus/fmdb</string>
 		<key>7965E84D0018EFCD2621E1CC5EDF1FCF37F58BAC</key>
 		<string>http://github.com/kellanburket/ravelry</string>
+		<key>DD20A1A48C66B5213E0FEBB87A95EF51D6C6F3E8</key>
+		<string>https://github.com/AFNetworking/AFNetworking</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>ravelry.xcodeproj</string>
@@ -23,6 +25,8 @@
 		<string>../../ravelry/fmdb</string>
 		<key>7965E84D0018EFCD2621E1CC5EDF1FCF37F58BAC</key>
 		<string>../..</string>
+		<key>DD20A1A48C66B5213E0FEBB87A95EF51D6C6F3E8</key>
+		<string>../../../AFNetworking</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>http://github.com/kellanburket/ravelry</string>
@@ -32,6 +36,14 @@
 	<string>7965E84D0018EFCD2621E1CC5EDF1FCF37F58BAC</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>DD20A1A48C66B5213E0FEBB87A95EF51D6C6F3E8</string>
+			<key>IDESourceControlWCCName</key>
+			<string>AFNetworking</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

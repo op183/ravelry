@@ -6,10 +6,10 @@
         <relationship name="user_setting_id" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserSetting" inverseName="setting_id" inverseEntity="UserSetting" syncable="YES"/>
     </entity>
     <entity name="User" representedClassName="ravelry.User" syncable="YES">
+        <attribute name="access_token" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="user_setting_id" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserSetting" inverseName="user_id" inverseEntity="UserSetting" syncable="YES"/>
     </entity>
     <entity name="UserSetting" syncable="YES">
@@ -20,7 +20,7 @@
     </entity>
     <elements>
         <element name="Setting" positionX="-135" positionY="216" width="128" height="90"/>
-        <element name="User" positionX="-603" positionY="197" width="128" height="118"/>
+        <element name="User" positionX="-603" positionY="197" width="128" height="120"/>
         <element name="UserSetting" positionX="-371" positionY="212" width="128" height="103"/>
     </elements>
 </model>

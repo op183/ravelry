@@ -15,7 +15,7 @@ class RegExp {
     var options: NSRegularExpressionOptions = NSRegularExpressionOptions.allZeros
     var mOptions: NSMatchingOptions = NSMatchingOptions.allZeros
     
-    init(_ pattern: String, options: String = "") {
+    init(_ pattern: String, _ options: String = "") {
         setOptions(options)
         self.pattern = pattern; //formatPattern(pattern)
     }
@@ -58,20 +58,26 @@ class RegExp {
         
         for result in results {
             numRanges = result.numberOfRanges - 1
-            for i in 1...numRanges {
-                println(i)
-                range = result.rangeAtIndex(i)
-                
-                matches.insert(input.substringWithRange(
-                    Range(
-                        start: advance(input.startIndex, range.location),
-                        end: advance(input.startIndex, range.location + range.length)
-                    )
+            if numRanges >= 1 {
+                for i in 1...numRanges {
+                    range = result.rangeAtIndex(i)
+                    
+                    matches.insert(input.substringWithRange(
+                        Range(
+                            start: advance(input.startIndex, range.location),
+                            end: advance(input.startIndex, range.location + range.length)
+                        )
                     ), atIndex: i - 1)
+                }
             }
         }
         
-        return matches
+        if matches.count > 0 {
+            return matches
+        } else {
+            return nil
+        }
+        
     }
     
     
@@ -96,7 +102,6 @@ class RegExp {
         )
         
         mutable.appendString(string)
-        println(replacement)
         
         doRegExp()!.replaceMatchesInString(
             mutable,
@@ -128,7 +133,6 @@ class RegExp {
     }
     
     func setOptions(flags: String) -> NSRegularExpressionOptions {
-        
         var options: NSRegularExpressionOptions = NSRegularExpressionOptions.allZeros
         
         for character in flags as String {
@@ -174,7 +178,24 @@ class RegExp {
     
 }
 
-let MIMEBase64Encoding: [Character] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "/"];
+let MIMEBase64Encoding: [Character] = [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    "+", "/"
+]
+
+let RestrictedRegexCharacters: [Character] = [
+    "[", ".", "+", "*", "/", "{", "\\", "(", ")", "|", "$", "^"
+]
+
+let WhitelistedPercentEncodingCharacters: [UnicodeScalar] = [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    ".", "-", "_", "~"
+]
+
 
 extension String {
     
@@ -228,6 +249,24 @@ extension String {
         return encoded + padding
     }
     
+    func split(delimiter: String) -> [String] {
+        var parsedDelimiter: String = ""
+        
+        for d in delimiter.unicodeScalars {
+            if contains(RestrictedRegexCharacters, Character(delimiter)) {
+                parsedDelimiter += "\\\\\(d)"
+            } else {
+                parsedDelimiter.append(d)
+            }
+        }
+        
+        if let matches = self.match("(.+?)(?:\(parsedDelimiter)|$)") {
+            return matches.reverse()
+        } else {
+            return [self]
+        }
+    }
+    
     func gsub(pattern: String, _ replacement: String) -> String {
         var regex = RegExp(pattern)
         return regex.gsub(self, replacement)
@@ -242,7 +281,12 @@ extension String {
         var regex = RegExp(pattern)
         return regex.match(self)
     }
-    
+
+    func match(pattern: String, _ options: String) -> [String]? {
+        var regex = RegExp(pattern, options)
+        return regex.match(self)
+    }
+
     func trim(_ characters: String = "") -> String {
         return self.gsub("^[\\s\(characters)]+|[\\s\(characters)]+$", "$1")
     }
@@ -263,21 +307,18 @@ extension String {
     func urlencode() -> String {
         return self.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
     }
-
+    
     func percentEncode() -> String {
         var output = ""
-        var whitelistedCharacters: [UnicodeScalar] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-", "_", "~"]
-
+        
         for char in self.unicodeScalars {
-            if contains(whitelistedCharacters, char) {
+            if contains(WhitelistedPercentEncodingCharacters, char) {
                 output.append(char)
             } else {
-                //var formatted = NSString(format: "%%%02X", UInt8(char))
-                //println("\(char) -> \(formatted)")
                 output += NSString(format: "%%%02X", UInt8(char))
             }
         }
-
+        
         return output
     }
     

@@ -8,23 +8,34 @@
 
 import UIKit
 
-class Pattern: BaseRavelryModel, AsyncLoaderDelegate {
-    
+class Pattern: BaseRavelryModel {
+
+    var id: Int
     var name: String
-    var author: Author
-    var photo: Mipmap
-    var sources: [PatternSource]
-    var id: Int?
+    var author: Author?
+    var photo: Mipmap?
     
-    var yarnWeight: String?
+    var photos = [Mipmap]()
+    var categories = [PatternCategory]()
+    var sources: [PatternSource]?
+    
+    
+    var favoritesCount: Int?
+    var ratingCount: Int?
+
+    var pdfURL: NSURL?
+    var downloadURL: NSURL?
+    
+    var yarnWeightDescription: String?
     var yardageMax: Float?
     var yardage: String?
-    var gaugePattern: String?
     var notes: String?
+
     var gauge: Float?
+    var gaugePattern: String?
+    var gaugeDescription: String?
     var gaugeDivisor: Float?
     
-    var downloadURL: NSURL?
     
     var isReady: Bool = false
     var loaderDelegate: AsyncLoaderDelegate?
@@ -32,30 +43,68 @@ class Pattern: BaseRavelryModel, AsyncLoaderDelegate {
     var needles = [Needle]()
     var yarns = [Yarn]()
     
-    init(id: Int, name: String, author: Author, photo: Mipmap, sources: [PatternSource]) {
+    var downloadLocation: NSURL?
+    
+    //User Attributes
+    var comment: String?
+    var tags = [String]()
+    var flags = 0
+    var favoriteId: Int?
+    
+    
+    //flags
+    let IS_FAVORITE = 2
+    let IS_FREE_DOWNLOAD = 4
+    let IS_RAVELRY_DOWNLOAD = 8
+    
+    init(id: Int, name: String, author: Author? = nil, photo: Mipmap? = nil, sources: [PatternSource]? = nil) {
         self.id = id
         self.name = name
         self.author = author
         self.photo = photo
         self.sources = sources
         super.init()
-        self.photo.loaderDelegate = self
     }
 
-    func getThumbnail() -> UIImage? {
-        if photo.thumbnail!.image != nil {
-            return photo.thumbnail!.image!
-        } else if photo.s!.image != nil {
-            return photo.s!.image!
-        }
-        return nil
+    func getMipmapAtIndex(index: Int) -> Mipmap? {
+        return photos[index]
     }
     
-    func loadComplete(object: AnyObject) {
-        //println("Pattern \(self.name) has finished loading...")
-        if loaderDelegate != nil {
-            loaderDelegate!.loadComplete(object)
+    func getThumbnail() -> UIImage? {
+        if let thumbnail = photo!.getThumbnail() {
+            return thumbnail.image
+        } else {
+            return nil
         }
     }
+    
+    func getPhotoCount() -> Int {
+        return photos.count
+    }
+    
+    func getThumbnailAtIndex(index: Int) -> UIImage? {
+        if let thumbnail = photos[index].getThumbnail() {
+            if let thumbnailImage = thumbnail.image {
+                return thumbnail.image!
+            } else {
+                return nil
+            }
+        } else {
+            return nil
+        }
+    }
+    
+    func setTags(tagString: String) {
+        
+    }
+    
+    func getComment() -> String {
+        if comment != nil {
+            return comment!
+        } else {
+            return ""
+        }
+    }
+    
 }
 

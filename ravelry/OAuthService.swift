@@ -8,14 +8,32 @@
 
 import UIKit
 
-class OAuthService: NSObject, UIApplicationDelegate {
-    var client: String?
-    var resourceServer: String?
-    var resourceOwner: String?
+@objc protocol OAuthServiceDelegate {
+    func accessTokenHasBeenFetched(accessToken: String, accessTokenSecret: String, username: String)
+    func accessTokenHasExpired()
+}
 
+@objc protocol OAuthServiceResultsDelegate {
+    func resultsHaveBeenFetched(results: NSData!, action: String)
+}
+
+class OAuthService: NSObject, NSURLConnectionDataDelegate {
+    var delegate: OAuthServiceDelegate?
+
+    let personalKey: String
     let consumerKey: String
     let consumerSecret: String
 
+    var requestToken: String?
+    var requestTokenSecret: String?
+    let requestTokenCallback: String
+
+    var accessToken: String?
+    var accessTokenSecret: String?
+    
+    var username: String?
+    
+    let encoding: NSStringEncoding = NSUTF8StringEncoding
     
     var requestTokenURL: NSURL? {
         get {
@@ -34,46 +52,132 @@ class OAuthService: NSObject, UIApplicationDelegate {
             return nil
         }
     }
-    
-    var requestTokenCallback: String {
-        get {
-            return ""
-        }
-    }
 
-    init(consumerKey: String, consumerSecret: String) {
+    init(consumerKey: String, consumerSecret: String, personalKey: String, requestTokenCallback: String) {
         self.consumerKey = consumerKey
         self.consumerSecret = consumerSecret
+        self.personalKey = personalKey
+        self.requestTokenCallback = requestTokenCallback
     }
     
-    func authenticate() {
-        obtainRequestToken()
+    func post(URLString: String, params: [String:String], handler: (NSData!) -> Void) {
+        self.request(NSURL(string: URLString)!, params: params, method: "POST", handler: handler)
     }
     
-    func application(application: UIApplication, openURL: NSURL, sourceApplication: String?, annotation: AnyObject?) {
-        var requestToken = ""
-        println("Response \(openURL)")
-        redirectToUserLogin()
-        var accessToken = exchangeRequestTokenForAccessToken(requestToken)
+    func get(URLString: String, params: [String:String], handler: (NSData!) -> Void) {
+        self.request(NSURL(string: URLString)!, params: params, method: "GET", handler: handler)
+    }
+
+    func get(URL: NSURL, params: [String:String], handler: (NSData!) -> Void) {
+        self.request(URL, params: params, method: "GET", handler: handler)
+    }
+
+    func post(URL: NSURL, params: [String:String], handler: (NSData!) -> Void) {
+        self.request(URL, params: params, method: "POST", handler: handler)
+    }
+
+    func get(URL: NSURL, params: [String:String], delegate: OAuthServiceResultsDelegate, action: String) {
+        self.request(URL, params: params, method: "GET", delegate: delegate, action: action)
+    }
+    
+    func post(URL: NSURL, params: [String:String], delegate: OAuthServiceResultsDelegate, action: String) {
+        self.request(URL, params: params, method: "POST", delegate: delegate, action: action)
+    }
+
+    func destroy(URL: NSURL, params: [String:String], delegate: OAuthServiceResultsDelegate, action: String) {
+        self.request(URL, params: params, method: "DELETE", delegate: delegate, action: action)
+    }
+    
+    func request(URL: NSURL, params: [String:String], method: String, handler: (NSData!) -> Void) {
+        request(URL,
+            params: params,
+            method: method,
+            handler: { (data: NSData!, response: NSURLResponse!, error: NSError!) in
+                let r = response as? NSHTTPURLResponse
+                let status = r!.statusCode
+
+                switch(status) {
+                    case(200):
+                        handler(data)
+                    default:
+                        println("Status: \(status)")
+                        println("Error: \(error)")
+                }
+            }
+        )
+    }
+    
+    func request(URL: NSURL, params: [String:String], method: String, handler: (NSData!, NSURLResponse!, NSError!) -> Void) {
+
+        var requestHeaders: [String:String] = [
+            "oauth_consumer_key": consumerKey,
+            "oauth_token": accessToken!,
+            "oauth_signature_method": "HMAC-SHA1",
+            "oauth_timestamp": getTimestamp(),
+            "oauth_nonce": generateNonce(),
+            "oauth_version": "1.0"
+        ]
         
+        var signingKey: String = "\(consumerSecret.percentEncode())&\(accessTokenSecret!.percentEncode())"
+        
+        sendRequest(
+            URL,
+            params: params,
+            requestHeaders: &requestHeaders,
+            signingKey: signingKey,
+            method: method,
+            completionHandler: handler
+        )
     }
     
-    class func buildSignature(headers: [String: String], method: String, url: String, signingKey: String) -> String? {
+    func request(URL: NSURL, params: [String:String], method: String, delegate: OAuthServiceResultsDelegate, action: String) {
+        request(URL,
+            params: params,
+            method: method,
+            handler: { (data: NSData!, response: NSURLResponse!, error: NSError!) in
+
+                if let r = response as? NSHTTPURLResponse  {
+                    var statusCode = r.statusCode
+                    switch statusCode {
+                        case 200:
+                            delegate.resultsHaveBeenFetched(data, action: action)
+                        default:
+                            println("Status: \(statusCode)")
+                            println("Error: \(error)")
+                    }
+                } else {
+                    println(response)
+                }
+            }
+        )
+    }
+    
+    func setAccessToken(accessToken: String, accessTokenSecret: String, username: String) {
+        self.accessToken = accessToken
+        self.username = username
+        self.accessTokenSecret = accessTokenSecret
+    }
+    
+    class func buildSignature(URL: NSURL, params: [String:String], signingKey: String, method: String) -> String? {
         var output = ""
         
-        var keys = [String](headers.keys)
+        var keys = [String](params.keys)
         
         keys.sort({ return $0 < $1 })
         
         for key in keys {
-            var value = headers[key]!
+            var value = params[key]!
             output += (key.percentEncode() + "=" + value.percentEncode() + "&")
         }
         
         output = output.rtrim("&").percentEncode()
+        var absoluteURL = URL.absoluteString!.percentEncode()
         
-        var signatureInput = method + "&" + url.percentEncode() + "&" + output
+        var signatureInput = "\(method)&\(absoluteURL)&\(output)"
         
+        
+        //println("Signature Input: \(signatureInput)")
+
         var signatureOutput = OAuthService.applyHashingAlgorithm(
             signatureInput,
             algorithm: HMACAlgorithm.SHA1,
@@ -115,11 +219,6 @@ class OAuthService: NSObject, UIApplicationDelegate {
             binaryString <<= 8
             binaryString |= UInt32(result[i])
             
-            //println(String(UInt32(result[i]), radix: 2) + ": " + String(format: "%02X", result[i]))
-            //println(String(binaryString, radix: 2))
-            
-            //println(i % 3)
-            //println(String(binaryString, radix: 2))
             iteration = i % 3
             
             if i % 3 == 2 {
@@ -137,124 +236,266 @@ class OAuthService: NSObject, UIApplicationDelegate {
                 base64String.append(MIMEBase64Encoding[ix2])
                 base64String.append(MIMEBase64Encoding[ix3])
                 base64String.append(MIMEBase64Encoding[ix4])
-                /*
-                println("Base 18")
-                println(String(binaryString, radix: 2))
-                println(String(mask[18]!, radix: 2))
-                println(String(b1, radix: 2))
 
-                println("Base 12")
-                println(String(binaryString, radix: 2))
-                println(String(mask[12]!, radix: 2))
-                println(String(b2, radix: 2))
- 
-                println("Base 6")
-                println(String(binaryString, radix: 2))
-                println(String(mask[6]!, radix: 2))
-                println(String(b3, radix: 2))
-                
-                println("Base 0")
-                println(String(binaryString, radix: 2))
-                println(String(mask[0]!, radix: 2))
-                println(String(b4, radix: 2))
-                
-                
-                println("\(ix1) \(ix2) \(ix3) \(ix4)")
-                println("\(MIMEBase64Encoding[ix1])\(MIMEBase64Encoding[ix2])\(MIMEBase64Encoding[ix3])\(MIMEBase64Encoding[ix4])")
-                */
                 binaryString = 0
-
             }
         }
+        
         var padding = ""
+        
         if binaryString > 0 {
             let remainder = Int(2 - iteration)
+
 
             for var j = 0; j < remainder; ++j {
                 padding += "="
                 binaryString <<= 2
             }
 
-            var b1: Int = Int(binaryString & mask[18]!)
-            var b2: Int = Int(binaryString & mask[12]!)
-            var b3: Int = Int(binaryString & mask[6]!)
-            var b4: Int = Int(binaryString & mask[0]!)
+            for var k = 18 - (remainder * 6); k >= 0; k -= 6 {
+                var byte: Int = Int(binaryString & mask[k]!)
+                var index: Int = byte >> k
+
+                base64String.append(MIMEBase64Encoding[index])
+            }
             
-            var ix1: Int = b1 >> 18
-            var ix2: Int = b2 >> 12
-            var ix3: Int = b3 >> 6
-            var ix4: Int = b4
             
-            base64String.append(MIMEBase64Encoding[ix1])
-            base64String.append(MIMEBase64Encoding[ix2])
-            base64String.append(MIMEBase64Encoding[ix3])
-            base64String.append(MIMEBase64Encoding[ix4])
         }
-
-
-        println(base64String + padding)
         return base64String + padding
     }
     
-    
-    private
-    func obtainRequestToken() {
-
-        var currentDate = NSDate()
-        var timestamp =  NSString(format: "%d", Int(currentDate.timeIntervalSince1970))
+    func getAccessToken(#token: String, verifier: String, username: String) {
         
-        println("Date \(currentDate), Timestamp \(timestamp)")
+        var requestHeaders: [String:String] = [
+            "oauth_consumer_key": consumerKey,
+            "oauth_nonce": generateNonce(),
+            "oauth_timestamp": getTimestamp(),
+            "oauth_signature_method": "HMAC-SHA1",
+            "oauth_token": self.requestToken!, //token,
+            "oauth_verifier": verifier,
+            "oauth_version": "1.0"
+        ]
+        
+        var signingKey: String = "\(consumerSecret.percentEncode())&\(requestTokenSecret!.percentEncode())"
+        
+        sendRequest(accessTokenURL!,
+            requestHeaders: &requestHeaders,
+            signingKey: signingKey,
+            method: "POST",
+            completionHandler: { (data, response, error) in
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                
+                var parts = [String:String]()
+                let params = String(NSString(data: data!, encoding: self.encoding)!).split("&")
+                
+                for param in params {
+                    let values = param.split("=")
+                    let key: String = values[0]
+                    let value: String = values[1]
+                    parts[key] = value
+                }
+                
+                self.accessToken = parts["oauth_token"]
+                self.accessTokenSecret = parts["oauth_token_secret"]
+                
+                self.delegate!.accessTokenHasBeenFetched(
+                    self.accessToken!,
+                    accessTokenSecret: self.accessTokenSecret!,
+                    username: username
+                )
+                
+            }
+        )
+    }
+    
+    func getAccessToken(#URL: NSURL) {
+        var matches = URL.absoluteString!.match(".*?\\?(.*)")
+        var params = matches![0].split("&");
+        var identifiers = [String:String]()
+        
+        for param in params {
+            var parts = param.split("=")
+            var key = parts[0]
+            identifiers[key] = parts[1]
+        }
+        
+        getAccessToken(
+            token: identifiers["oauth_token"]!,
+            verifier: identifiers["oauth_verifier"]!,
+            username: identifiers["username"]!
+        )
+    }
 
-        var requestHeaders = [
-            "oauth_callback": "oob",//requestTokenCallback,
+    func getRequestToken() {
+        var requestHeaders: [String:String] = [
+            "oauth_callback": requestTokenCallback,
             "oauth_consumer_key": consumerKey,
             "oauth_nonce": generateNonce(),
             "oauth_signature_method": "HMAC-SHA1",
-            "oauth_timestamp": timestamp,
-            "oauth_version": "1.0",
+            "oauth_timestamp": getTimestamp(),
+            "oauth_version": "1.0"
         ]
 
         var signingKey: String = consumerSecret.percentEncode() + "&"
-        
-        println("Signing Key \(signingKey)")
-        
-        requestHeaders["oauth_signature"] = OAuthService.buildSignature(requestHeaders,
+
+        sendRequest(requestTokenURL!,
+            requestHeaders: &requestHeaders,
+            signingKey: signingKey,
             method: "POST",
-            url: NSString(format: "%@s", requestTokenURL!),
-            signingKey: signingKey
-        )
-        
-        var authHeader = buildAuthorizationHeader(requestHeaders)
-        
-        println(authHeader)
-
-        var mutableRequest = NSMutableURLRequest(URL: requestTokenURL!)
-        mutableRequest.addValue(authHeader, forHTTPHeaderField: "Authorization")
-        mutableRequest.HTTPMethod = "POST"
-
-        var request = mutableRequest as NSURLRequest
-        
-        NSURLConnection.sendAsynchronousRequest(
-            request,
-            queue: NSOperationQueue.mainQueue(),
-            completionHandler: { (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
-                var parsedData = NSString(data: data, encoding: 8)
-                println("Connection Complete \(response)")
-                println("Connection Data \(parsedData)")
+            completionHandler: { (data, response, error) in
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                
+                //println("error: \(error)")
+                
+                var parts = [String:String]()
+                
+                let params = String(NSString(data: data!, encoding: self.encoding)!)
+                let parseParams = params.split("&")
+                
+                for param in parseParams {
+                    let values = param.split("=")
+                    
+                    let key: String = values[0]
+                    let value: String = values[1]
+                    parts[key] = value
+                }
+                
+                self.requestToken = parts["oauth_token"]
+                self.requestTokenSecret = parts["oauth_token_secret"]
+                var request = NSURL(string: "\(self.authorizeURL!.absoluteString!)?oauth_token=\(self.requestToken!)")
+                UIApplication.sharedApplication().openURL(request!)
             }
         )
-        
-    
+    }
+ 
+    func getTimestamp() -> String {
+        return String(Int64(NSDate().timeIntervalSince1970))
     }
     
-    func buildAuthorizationHeader(params: [String: String]) -> String {
+    func sendRequest(URL: NSURL, params: [String:String], inout requestHeaders: [String: String], signingKey: String, method: String, completionHandler: (NSData!, NSURLResponse!, NSError!) -> Void) {
+    
+        var request = NSMutableURLRequest(URL: URL)
+        request.HTTPMethod = method
+        request.timeoutInterval = 60
+        request.HTTPShouldHandleCookies = false
+
+        //println("signing key: \(signingKey)")
+        var oAuthHeaders = params + requestHeaders
+
+        requestHeaders["oauth_signature"] = OAuthService.buildSignature(
+            URL,
+            params: oAuthHeaders,
+            signingKey: signingKey,
+            method: method
+        )!
+        
+        //var sig = oAuthHeaders["oauth_signature"]
+        //println("signature: \(sig)")
+        //request.setValue("json", forHTTPHeaderField: "Accepts")
+        
+        switch request.HTTPMethod {
+            case "POST", "DELETE", "PUT":
+                request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+                var bodyString = OAuthService.buildBodyString(params)
+                request.HTTPBody = bodyString
+            default:
+                var x = 0
+        }
+        
+        request.setValue(buildAuthorizationHeader(requestHeaders), forHTTPHeaderField: "Authorization")
+
+        //var sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
+        //sessionConfig.HTTPAdditionalHeaders = ["Authorization" : authHeader]
+        
+        var session = NSURLSession.sharedSession()
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+        session.dataTaskWithRequest(request,
+            completionHandler: completionHandler
+        ).resume()
+    }
+    
+    func sendRequest(URL: NSURL, inout requestHeaders: [String: String], signingKey: String, method: String, completionHandler: (NSData!, NSURLResponse!, NSError!) -> Void) {
+        
+        self.sendRequest(
+            URL,
+            params: [String:String](),
+            requestHeaders: &requestHeaders,
+            signingKey: signingKey,
+            method: method,
+            completionHandler: completionHandler
+        )
+    }
+    
+    func sortParamaters(params: [String: String]) -> [String: String] {
+        var parameters = [String: String]()
+        var keys = [String](params.keys)
+        keys.sort({ return $0 < $1 })
+        
+        for key in keys {
+            parameters[key] = params[key]!
+        }
+
+        return parameters
+    }
+    
+    class func getAbsoluteURL(URL: NSURL, _ params: [String:String]) -> String {
+        var urlString = URL.absoluteString!
+        var paramString = buildParamString(params)
+        return "\(urlString)\(paramString)"
+    }
+    
+    class func buildBodyString(bodyElements: [String:String]) -> NSData? {
+        
+        var bodyString = ""
+        
+        for (k, v) in bodyElements {
+            var key = k.percentEncode()
+            var value = v.gsub(" ", "+").percentEncode()
+            bodyString += "\(key)=\(value)&"
+        }
+        bodyString = bodyString.rtrim("& ")
+        
+        //println(bodyString)
+        return bodyString.dataUsingEncoding(NSUTF8StringEncoding)
+    }
+    
+    class func buildParamString(params: [String: String]) -> String {
+        if countElements(params) > 0 {
+            var paramString = "?"
+            
+            var keys = [String](params.keys)
+            keys.sort({ return $0 < $1 })
+
+            for key in keys {
+                var value = params[key]!
+                paramString += key.percentEncode()  + "=" + value.percentEncode()  + "&"
+            }
+            
+            return paramString.rtrim("&")
+        } else {
+            return ""
+        }
+    }
+    
+    class func buildURL(URLString: String, params: [String:String]) -> NSURL? {
+        var paramString = self.buildParamString(params)
+        return NSURL(string: "\(URLString)\(paramString)")
+    }
+
+    
+    func buildAuthorizationHeader(params: [String: String], URL: NSURL? = nil) -> String {
         var header: String = "OAuth "
+        
+        if URL != nil {
+            header += "realm=\"\(URL!.absoluteString!)\", "
+        }
         
         var keys = [String](params.keys)
         keys.sort({ return $0 < $1 })
         
         for key in keys {
-            header += key.percentEncode() + "=\"" + params[key]!.percentEncode() + "\", "
+            header += key.percentEncode() + "=\"" + params[key]!.percentEncode()  + "\", "
         }
 
         return header.rtrim(", ")
@@ -275,50 +516,20 @@ class OAuthService: NSObject, UIApplicationDelegate {
     func generateNonce() -> String {
         var nonce: String = ""
         
-        for i in 0...5 {
+        for i in 0...7 {
             var index = Int((arc4random() % 62))
             nonce += String([nonceTable[index]])
         }
 
         return nonce
     }
-
-}
-
-class RavelryOAuthService: OAuthService {
-    override var requestTokenURL: NSURL? {
-        get {
-            return NSURL(
-                scheme: "https",
-                host: "www.ravelry.com",
-                path: "/oauth/request_token"
-            )
-        }
-    }
-
-    override var accessTokenURL: NSURL? {
-        get {
-            return NSURL(
-                scheme: "https",
-                host: "www.ravelry.com",
-                path: "/oauth/access_token"
-            )
-        }
-    }
-
-    override var authorizeURL: NSURL? {
-        get {
-            return NSURL(
-                scheme: "https",
-                host: "www.ravelry.com",
-                path: "/oauth/authorize"
-            )
-        }
+    
+    func readFullString(data: NSData) {
+        var s: String = NSString(data: data, encoding: encoding) as String
+        println("Connection Received Data \(s)")
     }
     
-    override var requestTokenCallback: String {
-        get {
-            return "ravelry://requesttoken".urlencode()
-        }
-    }
+    var response: NSURLResponse?
+    var data: NSData?
+
 }

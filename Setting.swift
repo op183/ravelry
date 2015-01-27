@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-class Setting: NSManagedObject {
+@objc class Setting: NSManagedObject {
 
     @NSManaged var id: NSNumber
     @NSManaged var name: String

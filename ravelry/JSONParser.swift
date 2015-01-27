@@ -8,59 +8,43 @@
 
 import UIKit
 
-class JSONParser<T>: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDelegate, AsyncLoaderDelegate {
-    
-    var loaderDelegate: AsyncLoaderDelegate?
+class JSONParser<T>: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDelegate {
     
     override init() {
         super.init()
     }
-
-    init(delegate: AsyncLoaderDelegate) {
-        super.init()
-        loaderDelegate = delegate
+    
+    func parse(json: NSDictionary) -> JSONParser<T> {
+        return self
+    }
+    
+    func loadData(path: String) -> JSONParser<T> {
+        let path = NSBundle.mainBundle().pathForResource(path, ofType: "json")
+        println("Path \(path)")
+        return loadData(NSData(
+            contentsOfFile: path!,
+            options: .DataReadingMappedIfSafe,
+            error: nil
+        ))
     }
 
+    func loadData(data: NSData?) -> JSONParser<T> {
 
-    func parse(url: NSURL, username: String, password: String) {
-        let request = NSMutableURLRequest(URL: url)
-        let encodedAuth = "Basic " + "\(username):\(password)".base64;
-        
-        request.addValue(encodedAuth, forHTTPHeaderField: "Authorization")
-        
-        NSURLConnection.sendAsynchronousRequest(
-            request,
-            queue: NSOperationQueue.mainQueue()
-        ) { (response, data, error) in
-
-            var parseError: NSError?
-            if data != nil {
-                if let json = NSJSONSerialization.JSONObjectWithData(
-                    data,
-                    options: nil, //NSJSONReadingOptions.AllowFragments | NSJSONReadingOptions.MutableContainers | NSJSONReadingOptions.MutableLeaves
-                    error: &parseError
-                    ) as? NSDictionary {
-                        self.parse(json)
-                } else {
-                    println("Could Not Initialize JSON Data: \(parseError)")
-                }
-            } else {
-                println("No data returned from server: \(error)")
-            }
+        if data != nil {
             
+            var parseError: NSError?
+            if let json = NSJSONSerialization.JSONObjectWithData(
+                data!,
+                options: nil,
+                error: &parseError
+                ) as? NSDictionary {
+                    return self.parse(json)
+            }
+            println("Could Not Initialize JSON Data: \(parseError)")
+        } else {
+            println("Data was nil")
         }
-    }
         
-    func parse(json: NSDictionary) {
-        
-    }
-    
-    func readFullString(data: NSData) {
-        var s: String = NSString(data: data, encoding: NSUTF8StringEncoding) as String
-        println("Connection Received Data \(s)")
-    }
-    
-    func loadComplete(object: AnyObject) {
-        loaderDelegate?.loadComplete(self)
+        return self
     }
 }

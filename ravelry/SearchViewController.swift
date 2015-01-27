@@ -8,9 +8,9 @@
 
 import UIKit
 
-class SearchViewController:  BaseRavelryNavigationController, UISearchBarDelegate, UISearchDisplayDelegate, AsyncLoaderDelegate {
-	
-    var parser: SearchResultsParser<NSDictionary>?
+class SearchViewController:  BaseRavelryNavigationController, UISearchBarDelegate, UISearchDisplayDelegate, AsyncLoaderDelegate, MipmapLoaderDelegate, OAuthServiceResultsDelegate {
+    
+    var parser: PatternsParser<NSDictionary>?
     var bundle = NSDictionary()
     var loaderDelegate: AsyncLoaderDelegate?
     @IBOutlet weak var searchBar: UISearchBar!
@@ -18,14 +18,10 @@ class SearchViewController:  BaseRavelryNavigationController, UISearchBarDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         searchBar.delegate = self
-        parser = SearchResultsParser<NSDictionary>()
-        parser!.loaderDelegate = self
     }
 
-    func searchBarSearchButtonClicked( searchBar: UISearchBar!)
-    {
+    func searchBarSearchButtonClicked( searchBar: UISearchBar!) {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
         var query = ""
@@ -33,24 +29,29 @@ class SearchViewController:  BaseRavelryNavigationController, UISearchBarDelegat
         if searchBar.text != nil {
             query = searchBar.text.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
         }
+
+        var params: [String:String] = [
+            "query": query,
+            "page_size": "10"
+        ]
         
-        
-        
-        var url = NSURL(
-            scheme: "https",
-            host: "api.ravelry.com",
-            path: "/patterns/search.json?page_size=10&query=\(query)"
-        )!
-        
-        //println("URL: \(url)")
-        parser!.parse(
-            url,
-            username: API["user"]!,
-            password: API["password"]!
-        )
+        mOAuthService.getPatterns(params, delegate: self, action: "GetPatterns")
     }
     
-    func loadComplete(object: AnyObject) {
+    func resultsHaveBeenFetched(data: NSData!, action: String) {
+
+        parser = PatternsParser<NSDictionary>(
+            mDelegate: self,
+            aDelegate: self
+        )
+        parser!.loadData(data)
+    }
+
+    func imageHasLoaded(remaining: Int, _ total: Int) {
+        
+    }
+
+    func loadComplete(object: AnyObject, action: String) {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         performSegueWithIdentifier("showSearchResults", sender: self)
     }
@@ -62,10 +63,5 @@ class SearchViewController:  BaseRavelryNavigationController, UISearchBarDelegat
             destinationVC.searchString = searchBar.text
         }
     }
-
-    override func didReceiveMemoryWarning() {
-		super.didReceiveMemoryWarning()
-		// Dispose of any resources that can be recreated.
-	}
 }
 
