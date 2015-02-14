@@ -8,19 +8,35 @@
 
 import UIKit
 
-class LoaderImageController: UIViewController, OAuthServiceDelegate, OAuthServiceResultsDelegate, AsyncLoaderDelegate, MipmapLoaderDelegate {
+class LoaderImageController: UIViewController, OAuthServiceDelegate, OAuthServiceResultsDelegate, AsyncLoaderDelegate, PhotoSetLoaderDelegate {
     
     @IBOutlet weak var progressBar: UIProgressView!
     
+    var firstPatterns = [Pattern]()
+
+    lazy var progressBarQueue: NSOperationQueue = {
+        var queue = NSOperationQueue.mainQueue()
+        queue.name = "ProgressBarQueue"
+        queue.maxConcurrentOperationCount = 1
+        return queue
+    }()
+
     override func viewDidLoad() {
+        fileCache = FileCache()
+        fileCache!.getCacheSize()
         loadUser()
         ravelryCategories = CategoryParser<NSDictionary>()
             .loadData("categories")
             .getCategories()
     }
     
+    
     func setProgress(remaining: Int, _ total: Int) {
-        progressBar!.setProgress(Float(remaining / total), animated: false)
+        progressBarQueue.addOperationWithBlock {
+            let progress = Float(remaining) / Float(total)
+            self.progressBar!.setProgress(progress, animated: true)
+        }
+        
     }
     
     func getOAuthRequestToken() {
@@ -47,7 +63,7 @@ class LoaderImageController: UIViewController, OAuthServiceDelegate, OAuthServic
                 if let username = user.getName() {
                     println("User Access Token ... \(accessToken)")
                     println("User Access Token Secret ... \(accessTokenSecret)")
-                    println("User Name ... \(username)")
+                    //println("User Name ... \(username)")
                     
                     mOAuthService.setAccessToken(
                         accessToken,
@@ -91,72 +107,109 @@ class LoaderImageController: UIViewController, OAuthServiceDelegate, OAuthServic
     func loadUser(user: User) {
         ravelryUser = user
         setAccessToken(ravelryUser!)
-        mOAuthService.getFavoritesList(self, action: "GetUserFavorites")
-        mOAuthService.getProjects(self, action: "GetUserProjects")
-        mOAuthService.getQueue(self, action: "GetUserQueue")
+        mOAuthService.getFavoritesList(self)
+        mOAuthService.getProjects(self)
+        mOAuthService.getQueue(self)
+        mOAuthService.getPatterns(["page_size": MAX_PATTERNS_PER_PAGE], delegate: self)
     }
 
     
-    func resultsHaveBeenFetched(results: NSData!, action: String) {
-        println("Loading \(action)")
+    func resultsHaveBeenFetched(data: NSData!, action: ActionResponse) {
         switch action {
-        case "GetUserFavorites":
-            FavoritesParser<NSDictionary>(
-                mDelegate: self,
-                aDelegate: self
-            ).loadData(results)
-        case "GetUserProjects":
-            ProjectsParser<NSDictionary>(
-                mDelegate: self,
-                aDelegate: self
-            ).loadData(results)
-        case "GetUserQueue":
-            QueueParser<NSDictionary>(
-                mDelegate: self,
-                aDelegate: self
-            ).loadData(results)
-        default:
-            NSException(name: "UnpermittedAction", reason: "\(action) is not a permitted action", userInfo: nil).raise()
+            case .PatternsRetrieved:
+                PatternsParser<NSDictionary>(
+                    mDelegate: self,
+                    aDelegate: self
+                ).loadData(data)
+            case .FavoritesRetrieved:
+                FavoritesParser<NSDictionary>(
+                    mDelegate: self,
+                    aDelegate: self
+                ).loadData(data)
+            case .ProjectsRetrieved:
+                ProjectsParser<NSDictionary>(
+                    mDelegate: self,
+                    aDelegate: self
+                ).loadData(data)
+            case .QueueRetrieved:
+                QueueParser<NSDictionary>(
+                    mDelegate: self,
+                    aDelegate: self
+                ).loadData(data)
+            default:
+                NSException(name: "UnpermittedAction", reason: "\(action.rawValue) is not a permitted action", userInfo: nil).raise()
         }
     }
     
-    func loadComplete(object: AnyObject, action: String) {
+    func loadComplete(object: AnyObject, action: ActionResponse) {
         
         switch action {
-            case "FavoritesLoaded":
-                //println("Favorites Loaded")
+            case .PatternsRetrieved:
+                patternsHaveLoaded = true
+                var parser = object as? PatternsParser<NSDictionary>
+                firstPatterns = parser!.patterns
+            case .FavoritesRetrieved:
                 favoritesHaveLoaded = true
-                var parser = object as? FavoritesParser<NSDictionary>
-                ravelryUser!.setFavorites(parser!.patterns)
-            case "QueueLoaded":
+                if let parser = object as? FavoritesParser<NSDictionary> {
+                    ravelryUser!.totalFavorites = parser.totalRecords
+                    ravelryUser!.setFavorites(parser.patterns)
+                }
+            case .QueueRetrieved:
                 //println("Queue Loaded")
                 queueHasLoaded = true
-                var parser = object as? QueueParser<NSDictionary>
-                var projects = parser!.projects
-                println(projects)
-                ravelryUser!.setQueue(projects)
-            case "ProjectsLoaded":
-                //println("Projects Loaded")
+                if let parser = object as? QueueParser<NSDictionary> {
+                    var projects = parser.projects
+                    ravelryUser!.totalQueuedProjects = parser.totalRecords
+                    ravelryUser!.setQueue(projects)
+                }
+            case .ProjectsRetrieved:
                 projectsHaveLoaded = true
-                var parser = object as? ProjectsParser<NSDictionary>
-                var projects = parser!.projects
-                println(projects)
-                ravelryUser!.setProjects(projects)
+                if let parser = object as? ProjectsParser<NSDictionary> {
+                    var projects = parser.projects
+                    //println("Projects Loaded \(projects)")
+                    ravelryUser!.totalProjects = parser.totalRecords
+                    ravelryUser!.setProjects(projects)
+                }
             default:
                 NSException(name: "UnpermittedAction", reason: "\(action) is not a permitted action", userInfo: nil).raise()
         }
         
-        if projectsHaveLoaded && queueHasLoaded && favoritesHaveLoaded {
+        if projectsHaveLoaded && queueHasLoaded && favoritesHaveLoaded && patternsHaveLoaded {
             performSegueWithIdentifier("loadMainNavigator", sender: self)
         }
 
     }
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let tabController = segue.destinationViewController as UITabBarController
+        
+        
+        if let splitViewController = tabController.viewControllers![0] as? UISplitViewController {
+            if let navController = splitViewController.viewControllers[1] as? UINavigationController {
+                if let searchController = navController.viewControllers[0] as? CategoryCollectionController {
+                    //println("Setting Patterns for Category Collection Controller")
+                    let searchButton = UIBarButtonItem(
+                        image: UIImage(named: "magnifying-glass"),
+                        style: UIBarButtonItemStyle.Plain,
+                        target: splitViewController.displayModeButtonItem().target,
+                        action: splitViewController.displayModeButtonItem().action
+                    )
+                    
+                    //collectionController.navigationItem.leftBarButtonItem = searchButton
+                    searchController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+
+                    searchController.setPatterns(firstPatterns)
+                }
+            }
+        }
+    }
+    
     func imageHasLoaded(remaining: Int, _ total: Int) {
-        setProgress(remaining, total)
+        setProgress(++totalRemaining, MAX_PATTERNS_PER_PAGE + (MAX_PROJECTS_PER_PAGE * 3))
     }
     
     private
+    var totalRemaining = 0
     var favoritesHaveLoaded = false
     var projectsHaveLoaded = false
     var queueHasLoaded = false

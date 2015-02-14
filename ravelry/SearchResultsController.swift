@@ -24,4 +24,5 @@ class SearchResultsController: BaseResultsController {
         searchResults.delegate = self
         navTitle.title = "Search results for: '\(searchString)'"
     }
+    
 }

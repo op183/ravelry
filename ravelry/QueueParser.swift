@@ -11,14 +11,15 @@ import UIKit
 class QueueParser<T>: ProjectsParser<T> {
 
 
-    override init(mDelegate: MipmapLoaderDelegate, aDelegate: AsyncLoaderDelegate) {
+    override init(mDelegate: PhotoSetLoaderDelegate, aDelegate: AsyncLoaderDelegate) {
         super.init(mDelegate: mDelegate, aDelegate: aDelegate)
-        loadAction = "QueueLoaded"
+        loadAction = .QueueRetrieved
     }
     
     override func parse(json: NSDictionary) -> JSONParser<T> {
         
         if let projects = json["queued_projects"] as? NSArray {
+            super.parse(json)
             numProjects = projects.count
             for project in projects {
                 var id = project["id"] as Int
@@ -31,7 +32,7 @@ class QueueParser<T>: ProjectsParser<T> {
                     patternId: patternId,
                     name: name,
                     patternName: patternName,
-                    photo: loadMipmap(project["best_photo"] as? NSDictionary)
+                    photo: loadMipmap(project["best_photo"] as? NSDictionary, maxToLoad: 1)
                 ))
             }
         }

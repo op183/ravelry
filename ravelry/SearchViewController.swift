@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SearchViewController:  BaseRavelryNavigationController, UISearchBarDelegate, UISearchDisplayDelegate, AsyncLoaderDelegate, MipmapLoaderDelegate, OAuthServiceResultsDelegate {
+class SearchViewController:  BaseRavelryNavigationController, UISearchBarDelegate, UISearchDisplayDelegate, AsyncLoaderDelegate, PhotoSetLoaderDelegate, OAuthServiceResultsDelegate {
     
     var parser: PatternsParser<NSDictionary>?
     var bundle = NSDictionary()
@@ -35,10 +35,10 @@ class SearchViewController:  BaseRavelryNavigationController, UISearchBarDelegat
             "page_size": "10"
         ]
         
-        mOAuthService.getPatterns(params, delegate: self, action: "GetPatterns")
+        mOAuthService.getPatterns(params, delegate: self)
     }
     
-    func resultsHaveBeenFetched(data: NSData!, action: String) {
+    func resultsHaveBeenFetched(data: NSData!, action: ActionResponse) {
 
         parser = PatternsParser<NSDictionary>(
             mDelegate: self,
@@ -51,14 +51,14 @@ class SearchViewController:  BaseRavelryNavigationController, UISearchBarDelegat
         
     }
 
-    func loadComplete(object: AnyObject, action: String) {
+    func loadComplete(object: AnyObject, action: ActionResponse) {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         performSegueWithIdentifier("showSearchResults", sender: self)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         let destinationVC = segue.destinationViewController as SearchResultsController
-        destinationVC.patterns = parser!.patterns
+        
         if searchBar.text != nil {
             destinationVC.searchString = searchBar.text
         }

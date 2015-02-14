@@ -8,19 +8,14 @@
 
 import UIKit
 
-class ImagePopover: UIViewController {
+class ImagePopover: ModalSwipeNavigator {
     
     @IBAction func dismiss(sender: UIButton) {
         dismissViewControllerAnimated(true, completion: nil)
     }
 
-    @IBOutlet weak var fullsizeImage: UIImageView!
-    var selectedImage: Mipmap?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        println("Popover Did Load")
-        fullsizeImage.image = selectedImage?.getFullsizeImage(self.view.frame.size)
     }
-    
+
 }

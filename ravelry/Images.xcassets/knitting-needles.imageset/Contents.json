@@ -3,11 +3,12 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "knitting-needles-50px.png"
+      "filename" : "knitting-needles-50px-1.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "knitting-needles-50px.png"
     },
     {
       "idiom" : "universal",

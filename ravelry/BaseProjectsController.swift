@@ -8,60 +8,61 @@
 
 import UIKit
 
-class BaseProjectsController: BaseRavelryTableViewController, AsyncLoaderDelegate, OAuthServiceResultsDelegate, MipmapLoaderDelegate, UITableViewDataSource, UITableViewDelegate {
+class BaseProjectsController: BaseRavelryTableViewController, AsyncLoaderDelegate, OAuthServiceResultsDelegate, PhotoSetLoaderDelegate, UITableViewDataSource, UITableViewDelegate {
     
-    var projects = [Project]()
-    var projectsById = [Int: Project]()
-    var selectedProjectId: Int?
-    var selectedPattern: Pattern?
+    var selectedProjectIndex: Int?
     var segueAction = "showProject"
 
-    func imageHasLoaded(remaining: Int, _ total: Int) {
-        
+    var totalRecords: Int {
+        return ravelryUser!.totalProjects
+    }
+    
+    var projects: [Project] {
+        return ravelryUser!.getProjects()
     }
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
-        let patternView = segue.destinationViewController as PatternViewController
-        patternView.pattern = selectedPattern
+    override func viewDidAppear(animated: Bool) {
+        tableView.reloadData()
     }
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        let indexPath = tableView.indexPathForSelectedRow();
-        let currentCell = tableView.cellForRowAtIndexPath(indexPath!) as ProjectCell;
-        selectedProjectId = currentCell.project!.id
-        mOAuthService.getPattern(currentCell.project!.patternId, delegate: self, action: "GetPattern")
-    }
-    
+
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier("projectCell", forIndexPath: indexPath) as ProjectCell
+        if projects.count == indexPath.row {
+            var cell = tableView.dequeueReusableCellWithIdentifier("viewMoreCell", forIndexPath: indexPath) as ViewMoreCell
+            cell.selected = false
+            return cell
+        } else {
+            var cell = tableView.dequeueReusableCellWithIdentifier("projectCell", forIndexPath: indexPath) as ProjectCell
+            
+            let project = projects[indexPath.row]
+            cell.titleLabel.text = project.name
+            cell.thumbnailView.image = project.getThumbnail()!
+            return cell
+        }
         
-        let project = projects[indexPath.row]
-        projectsById[project.id] = project
-        
-        cell.project = project
-        cell.titleLabel.text = project.name
-        cell.thumbnailView.image = project.getThumbnail()!
-        return cell
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.projects.count
+        if totalRecords > projects.count {
+            return projects.count + 1
+        } else {
+            return projects.count
+        }
     }
-    
-    func resultsHaveBeenFetched(data: NSData!, action: String) {
-        selectedPattern = projectsById[selectedProjectId!]!.getPattern()
+        
+    func resultsHaveBeenFetched(data: NSData!, action: ActionResponse) {
 
-        PatternParser<NSDictionary>(
-            mDelegate: self,
-            aDelegate: self,
-            pattern: selectedPattern!
-        ).loadData(data)
     }
     
-    func loadComplete(object: AnyObject, action: String) {
-        self.performSegueWithIdentifier(segueAction, sender: self)
+    func loadComplete(object: AnyObject, action: ActionResponse) {
+        if let parser = object as? ProjectParser<NSDictionary> {
+            self.performSegueWithIdentifier(segueAction, sender: self)
+        }
     }
     
+    func imageHasLoaded(remaining: Int, _ total: Int) {
+        //println("Image Has loaded: \(remaining) / \(total)")
+    }
+
+
 }

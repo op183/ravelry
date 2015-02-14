@@ -32,21 +32,18 @@ class CoreDataManager {
     func fetch(entity: String) -> [NSManagedObject]? {
         var request = NSFetchRequest(entityName: entity)
         var error: NSError?
-        var results = managedContext.executeFetchRequest(
+        if let entities = managedContext.executeFetchRequest(
             request,
             error: &error
-        ) as [NSManagedObject]?
+        ) as? [NSManagedObject] {
 
-        var entities = results;
-        if entities != nil {
-            if entities!.count > 0 {
-                return entities! as [NSManagedObject]
+            if entities.count > 0 {
+                return entities
             } else {
                 println("Could Not Fetch \(entity)")
                 return nil
             }
         }
-        
         println("Could not fetch \(error), \(error!.userInfo)")
         return nil
     }

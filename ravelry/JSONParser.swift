@@ -30,21 +30,32 @@ class JSONParser<T>: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDeleg
 
     func loadData(data: NSData?) -> JSONParser<T> {
 
+        if let json = loadRaw(data) {
+            return self.parse(json)
+        } else {
+            NSException(
+                name: "JSONParserError",
+                reason: "Could Not Initialize JSON Data",
+                userInfo: nil
+            )
+        }
+      
+        return self
+    }
+    
+    func loadRaw(data: NSData?) -> NSDictionary? {
+        
         if data != nil {
-            
             var parseError: NSError?
-            if let json = NSJSONSerialization.JSONObjectWithData(
+            return NSJSONSerialization.JSONObjectWithData(
                 data!,
                 options: nil,
                 error: &parseError
-                ) as? NSDictionary {
-                    return self.parse(json)
-            }
-            println("Could Not Initialize JSON Data: \(parseError)")
+            ) as? NSDictionary
         } else {
             println("Data was nil")
         }
-        
-        return self
+
+        return nil
     }
 }

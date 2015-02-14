@@ -9,71 +9,84 @@
 import UIKit
 
 
-class DialogueController {
+class DialogueController: NSObject {
 
-    var controller: UIAlertController?
-
-    init(title: String, message: String) {
+    var controller: UIAlertController
+    
+    init(title: String, message: String = "") {
         controller = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        super.init()
     }
     
-    func addTextField(#placeholder: String) {
+    func addTextField(#placeholder: String) -> DialogueController {
         addTextField(placeholder: placeholder, isSecure: false)
+        return self
     }
     
-    func addTextField(#placeholder: String, isSecure: Bool) {
+    func addTextField(#placeholder: String, isSecure: Bool) -> DialogueController {
+        
         func setTextField(textField: UITextField!) {
             textField.placeholder = placeholder
             textField.secureTextEntry = isSecure
         }
         
-        controller!.addTextFieldWithConfigurationHandler(setTextField)
+        controller.addTextFieldWithConfigurationHandler(setTextField)
+        return self
     }
     
-    func addAction(title: String, handler: (action:UIAlertAction!) -> Void) {
-        controller!.addAction(
+    func addAction(title: String, handler: (action:UIAlertAction!) -> Void) -> DialogueController {
+        controller.addAction(
             UIAlertAction(
                 title: title,
                 style: UIAlertActionStyle.Default,
                 handler: handler
             )
         )
+        
+        return self
     }
     
-    func addCancelAction() {
-        controller!.addAction(
+    func addCancelAction() -> DialogueController {
+        
+        controller.addAction(
             UIAlertAction(
                 title: "Cancel",
                 style: UIAlertActionStyle.Cancel,
                 handler: nil
             )
         )
+        
+        return self
     }
     
     func getTextFieldAtIndex(index: Int) -> String {
-        return (controller!.textFields![index] as UITextField).text
+        return (controller.textFields![index] as UITextField).text
     }
     
-    func addPasswordField(#placeholder: String) {
+    func addPasswordField(#placeholder: String) -> DialogueController {
         addTextField(placeholder: placeholder, isSecure: true)
+        return self
     }
     
-    func styleMessage(font: UIFont) {
-        setFont(controller!.message!, font: font, key: "attributedMessage")
+    func styleMessage(font: UIFont) -> DialogueController {
+        setFont(controller.message!, font: font, key: "attributedMessage")
+        return self
     }
     
-    func styleTitle(font: UIFont) {
-        setFont(controller!.title!, font: font, key: "attributedTitle")
+    func styleTitle(font: UIFont) -> DialogueController {
+        setFont(controller.title!, font: font, key: "attributedTitle")
+        return self
     }
     
-    func present(#context: UIViewController) {
+    func present(#context: UIViewController) -> DialogueController {
         context.presentViewController(
-            controller!,
+            controller,
             animated: true,
             completion: nil
         )
+        return self
     }
-
+    
     private
     func setFont(text: String, font: UIFont, key: String) {
         var title = NSMutableAttributedString(string: text)

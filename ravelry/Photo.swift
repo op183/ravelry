@@ -16,28 +16,28 @@ class Photo: BaseRavelryModel {
 
     var delegate: PhotoDelegate?
     var image: UIImage?
-    var tag: String
+    var tag: PictureSize
+    
+    var name: String?
+    var id: String?
 
-    init(_ url: String, _ tag: String) {
+    init(_ url: String, _ tag: PictureSize) {
         self.tag = tag
         super.init()
         
-        Http.request(url, handler: {
-            (
-                response: NSURLResponse!,
-                data: NSData!,
-                error: NSError!
-            ) -> Void in
-            
+        Http.request(url) { (data, response, error) in
             if data != nil {
-                self.setImage(UIImage(data: data)!)
+                if let image = UIImage(data: data) {
+                    self.setImage(image)
+                    fileCache!.putDataInCache(self.id!, name: self.name!, data: data)
+                }
             } else {
                 println("Image @ \(url) is Nil: \(error)")
             }
-        })
+        }
     }
     
-    init(image: UIImage, tag: String = "", delegate: PhotoDelegate) {
+    init(image: UIImage, tag: PictureSize = .Small, delegate: PhotoDelegate) {
         self.tag = tag
         super.init()
         self.delegate = delegate
@@ -46,15 +46,9 @@ class Photo: BaseRavelryModel {
     
     func setImage(image: UIImage) {
         self.image = image
-        NSThread(
-            target: self,
-            selector: Selector("triggerPhotoAction:"),
-            object: nil
-        ).start()
-    }
-
-    @IBAction func triggerPhotoAction(sender: AnyObject?) {
-        self.delegate!.photoHasLoaded(self, action: "PhotoHasLoaded")
+        delay(0.1) {
+            self.delegate!.photoHasLoaded(self, action: "PhotoHasLoaded")
+        }
     }
     
     func setInsets(top: CGFloat, _ left: CGFloat, viewSize: CGSize? = nil) {

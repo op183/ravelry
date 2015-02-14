@@ -8,17 +8,12 @@
 
 import UIKit
 
-class Pattern: BaseRavelryModel {
+class Pattern: BaseRavelryModelWithPhotos {
 
-    var id: Int
-    var name: String
     var author: Author?
-    var photo: Mipmap?
     
-    var photos = [Mipmap]()
     var categories = [PatternCategory]()
     var sources: [PatternSource]?
-    
     
     var favoritesCount: Int?
     var ratingCount: Int?
@@ -41,7 +36,7 @@ class Pattern: BaseRavelryModel {
     var loaderDelegate: AsyncLoaderDelegate?
     
     var needles = [Needle]()
-    var yarns = [Yarn]()
+    var packs = [Pack]()
     
     var downloadLocation: NSURL?
     
@@ -51,47 +46,23 @@ class Pattern: BaseRavelryModel {
     var flags = 0
     var favoriteId: Int?
     
-    
     //flags
     let IS_FAVORITE = 2
     let IS_FREE_DOWNLOAD = 4
     let IS_RAVELRY_DOWNLOAD = 8
     
-    init(id: Int, name: String, author: Author? = nil, photo: Mipmap? = nil, sources: [PatternSource]? = nil) {
-        self.id = id
-        self.name = name
-        self.author = author
-        self.photo = photo
-        self.sources = sources
+    override init() {
         super.init()
     }
-
-    func getMipmapAtIndex(index: Int) -> Mipmap? {
-        return photos[index]
+    
+    init(id: Int, name: String, photo: PhotoSet, author: Author? = nil, sources: [PatternSource]? = nil) {
+        self.author = author
+        self.sources = sources
+        super.init(id: id, name: name, photo: photo)
     }
     
-    func getThumbnail() -> UIImage? {
-        if let thumbnail = photo!.getThumbnail() {
-            return thumbnail.image
-        } else {
-            return nil
-        }
-    }
-    
-    func getPhotoCount() -> Int {
-        return photos.count
-    }
-    
-    func getThumbnailAtIndex(index: Int) -> UIImage? {
-        if let thumbnail = photos[index].getThumbnail() {
-            if let thumbnailImage = thumbnail.image {
-                return thumbnail.image!
-            } else {
-                return nil
-            }
-        } else {
-            return nil
-        }
+    convenience init(id: Int, name: String) {
+        self.init(id: id, name: name, photo: PhotoSet())
     }
     
     func setTags(tagString: String) {

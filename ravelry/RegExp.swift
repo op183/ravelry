@@ -308,18 +308,41 @@ extension String {
         return self.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
     }
     
-    func percentEncode() -> String {
+    func percentEncode(ignore: [UnicodeScalar] = [UnicodeScalar]()) -> String {
         var output = ""
         
         for char in self.unicodeScalars {
-            if contains(WhitelistedPercentEncodingCharacters, char) {
+            if contains(WhitelistedPercentEncodingCharacters, char) || contains(ignore, char) {
                 output.append(char)
             } else {
-                output += NSString(format: "%%%02X", UInt8(char))
+                output += NSString(format: "%%%02X", UInt64(char))
             }
         }
         
         return output
+    }
+    
+    func toDate(pattern: String = "\\d{4}\\/\\d{1,2}\\/\\d{1,2}") -> NSDate? {
+        if let matches = self.match(pattern) {
+            let calendar = NSCalendar.currentCalendar()
+            let comp = NSDateComponents()
+            
+            if let year = matches[0].toInt() {
+                comp.year = year
+                if let month = matches[1].toInt() {
+                    comp.month = month
+                    if let day = matches[2].toInt() {
+                        comp.day = day
+                        comp.hour = 0
+                        comp.minute = 0
+                        comp.second = 0
+                        return calendar.dateFromComponents(comp)
+                    }
+                }
+            }
+        }
+        
+        return nil
     }
     
     func toURL() -> NSURL? {

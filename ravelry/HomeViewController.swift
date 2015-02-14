@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HomeViewController: UICollectionViewController {
+class HomeViewController: BaseRavelryCollectionViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -23,5 +23,7 @@ class HomeViewController: UICollectionViewController {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
+    
+    
 }
 

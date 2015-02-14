@@ -12,8 +12,19 @@ import CoreData
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    
 	var window: UIWindow?
+    
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+
+        let URLCache = NSURLCache(
+            memoryCapacity: 4 * 1024 * 1024,
+            diskCapacity: 20 * 1024 * 1024,
+            diskPath: nil
+        )
+        
+        NSURLCache.setSharedURLCache(URLCache)
+        
         cdm = CoreDataManager(context: self)
 
         basalFont =  UIFont(

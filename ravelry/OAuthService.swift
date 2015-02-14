@@ -8,18 +8,21 @@
 
 import UIKit
 
-@objc protocol OAuthServiceDelegate {
+typealias OAuthResponseHandler = (NSData!, NSURLResponse!, NSError!) -> ()
+
+protocol OAuthServiceDelegate {
     func accessTokenHasBeenFetched(accessToken: String, accessTokenSecret: String, username: String)
     func accessTokenHasExpired()
 }
 
-@objc protocol OAuthServiceResultsDelegate {
-    func resultsHaveBeenFetched(results: NSData!, action: String)
+protocol OAuthServiceResultsDelegate {
+    func resultsHaveBeenFetched(data: NSData!, action: ActionResponse)
 }
 
 class OAuthService: NSObject, NSURLConnectionDataDelegate {
     var delegate: OAuthServiceDelegate?
-
+    var addParamsToAuthHeader = false
+    
     let personalKey: String
     let consumerKey: String
     let consumerSecret: String
@@ -59,67 +62,103 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
         self.personalKey = personalKey
         self.requestTokenCallback = requestTokenCallback
     }
-    
-    func post(URLString: String, params: [String:String], handler: (NSData!) -> Void) {
+
+    func update(URLString: String, params: [String:AnyObject], handler: OAuthResponseHandler) {
+        self.request(NSURL(string: URLString)!, params: params, method: "PUT", handler: handler)
+    }
+
+    func post(URLString: String, params: [String:AnyObject], handler: OAuthResponseHandler) {
         self.request(NSURL(string: URLString)!, params: params, method: "POST", handler: handler)
     }
-    
-    func get(URLString: String, params: [String:String], handler: (NSData!) -> Void) {
+
+    func post(URLString: String, handler: OAuthResponseHandler) {
+        self.request(NSURL(string: URLString)!, params: [String:AnyObject](), method: "POST", handler: handler)
+    }
+
+    func post(URL: NSURL, handler: OAuthResponseHandler) {
+        self.request(URL, params: [String:AnyObject](), method: "POST", handler: handler)
+    }
+
+    func get(URLString: String, params: [String:AnyObject], handler: OAuthResponseHandler) {
         self.request(NSURL(string: URLString)!, params: params, method: "GET", handler: handler)
     }
 
-    func get(URL: NSURL, params: [String:String], handler: (NSData!) -> Void) {
+
+    func update(URL: NSURL, params: [String:AnyObject], handler: OAuthResponseHandler) {
+        self.request(URL, params: params, method: "PUT", handler: handler)
+    }
+
+    func get(URL: NSURL, params: [String:AnyObject], handler: OAuthResponseHandler) {
         self.request(URL, params: params, method: "GET", handler: handler)
     }
 
-    func post(URL: NSURL, params: [String:String], handler: (NSData!) -> Void) {
+    func post(URL: NSURL, params: [String:AnyObject], handler: OAuthResponseHandler) {
         self.request(URL, params: params, method: "POST", handler: handler)
     }
 
-    func get(URL: NSURL, params: [String:String], delegate: OAuthServiceResultsDelegate, action: String) {
+    
+    func update(URL: NSURL, params: [String:AnyObject], delegate: OAuthServiceResultsDelegate, action: ActionResponse = .Default) {
+        self.request(URL, params: params, method: "PUT", delegate: delegate, action: action)
+    }
+    
+    func get(URL: NSURL, params: [String:AnyObject], delegate: OAuthServiceResultsDelegate, action: ActionResponse = .Default) {
         self.request(URL, params: params, method: "GET", delegate: delegate, action: action)
     }
     
-    func post(URL: NSURL, params: [String:String], delegate: OAuthServiceResultsDelegate, action: String) {
+    func post(URL: NSURL, params: [String:AnyObject], delegate: OAuthServiceResultsDelegate, action: ActionResponse = .Default) {
         self.request(URL, params: params, method: "POST", delegate: delegate, action: action)
     }
 
-    func destroy(URL: NSURL, params: [String:String], delegate: OAuthServiceResultsDelegate, action: String) {
+    func destroy(URL: NSURL, params: [String:AnyObject], delegate: OAuthServiceResultsDelegate, action: ActionResponse = .Default) {
         self.request(URL, params: params, method: "DELETE", delegate: delegate, action: action)
     }
     
-    func request(URL: NSURL, params: [String:String], method: String, handler: (NSData!) -> Void) {
+    
+    func post(URL: NSURL, delegate: OAuthServiceResultsDelegate, action: ActionResponse = .Default) {
+        self.request(URL, params: [String:AnyObject](), method: "POST", delegate: delegate, action: action)
+    }
+    func get(URL: NSURL, delegate: OAuthServiceResultsDelegate, action: ActionResponse = .Default) {
+        self.request(URL, params: [String:AnyObject](), method: "POST", delegate: delegate, action: action)
+    }
+    func update(URL: NSURL, delegate: OAuthServiceResultsDelegate, action: ActionResponse = .Default) {
+        self.request(URL, params: [String:AnyObject](), method: "POST", delegate: delegate, action: action)
+    }
+    func destroy(URL: NSURL, delegate: OAuthServiceResultsDelegate, action: ActionResponse = .Default) {
+        self.request(URL, params: [String:AnyObject](), method: "POST", delegate: delegate, action: action)
+    }
+    
+    func post(URL: NSURL, json: NSData, delegate: OAuthServiceResultsDelegate, action: ActionResponse) {
+        self.request(URL, json: json, method: "POST", delegate: delegate, action: action)
+    }
+
+    func request(URL: NSURL, json: NSData, method: String, delegate: OAuthServiceResultsDelegate, action: ActionResponse) {
+        
+        var requestHeaders = getRequestHeaders()
+        var signingKey = getSigningKey()
+        
+        sendRequest(URL,
+            json: json,
+            requestHeaders: &requestHeaders,
+            signingKey: signingKey,
+            method: method,
+            completionHandler: getDefaultCompletionHandler(action, delegate: delegate)
+        )
+
+    }
+    
+    func request(URL: NSURL, params: [String:AnyObject], method: String, handler: OAuthResponseHandler, action: ActionResponse) {
         request(URL,
             params: params,
             method: method,
-            handler: { (data: NSData!, response: NSURLResponse!, error: NSError!) in
-                let r = response as? NSHTTPURLResponse
-                let status = r!.statusCode
-
-                switch(status) {
-                    case(200):
-                        handler(data)
-                    default:
-                        println("Status: \(status)")
-                        println("Error: \(error)")
-                }
-            }
+            handler: handler
         )
     }
     
-    func request(URL: NSURL, params: [String:String], method: String, handler: (NSData!, NSURLResponse!, NSError!) -> Void) {
+    func request(URL: NSURL, params: [String:AnyObject], method: String, handler: OAuthResponseHandler) {
 
-        var requestHeaders: [String:String] = [
-            "oauth_consumer_key": consumerKey,
-            "oauth_token": accessToken!,
-            "oauth_signature_method": "HMAC-SHA1",
-            "oauth_timestamp": getTimestamp(),
-            "oauth_nonce": generateNonce(),
-            "oauth_version": "1.0"
-        ]
-        
-        var signingKey: String = "\(consumerSecret.percentEncode())&\(accessTokenSecret!.percentEncode())"
-        
+        var requestHeaders = getRequestHeaders()
+        var signingKey = getSigningKey()
+
         sendRequest(
             URL,
             params: params,
@@ -130,25 +169,11 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
         )
     }
     
-    func request(URL: NSURL, params: [String:String], method: String, delegate: OAuthServiceResultsDelegate, action: String) {
+    func request(URL: NSURL, params: [String:AnyObject], method: String, delegate: OAuthServiceResultsDelegate, action: ActionResponse) {
         request(URL,
             params: params,
             method: method,
-            handler: { (data: NSData!, response: NSURLResponse!, error: NSError!) in
-
-                if let r = response as? NSHTTPURLResponse  {
-                    var statusCode = r.statusCode
-                    switch statusCode {
-                        case 200:
-                            delegate.resultsHaveBeenFetched(data, action: action)
-                        default:
-                            println("Status: \(statusCode)")
-                            println("Error: \(error)")
-                    }
-                } else {
-                    println(response)
-                }
-            }
+            handler: getDefaultCompletionHandler(action, delegate: delegate)
         )
     }
     
@@ -158,7 +183,7 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
         self.accessTokenSecret = accessTokenSecret
     }
     
-    class func buildSignature(URL: NSURL, params: [String:String], signingKey: String, method: String) -> String? {
+    class func buildSignature(URL: NSURL, params: [String:AnyObject], signingKey: String, method: String) -> String? {
         var output = ""
         
         var keys = [String](params.keys)
@@ -166,15 +191,13 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
         keys.sort({ return $0 < $1 })
         
         for key in keys {
-            var value = params[key]!
-            output += (key.percentEncode() + "=" + value.percentEncode() + "&")
+            output += (key.percentEncode() + "=" + "\(params[key]!)".percentEncode() + "&")
         }
         
         output = output.rtrim("&").percentEncode()
         var absoluteURL = URL.absoluteString!.percentEncode()
         
         var signatureInput = "\(method)&\(absoluteURL)&\(output)"
-        
         
         //println("Signature Input: \(signatureInput)")
 
@@ -266,7 +289,7 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
     
     func getAccessToken(#token: String, verifier: String, username: String) {
         
-        var requestHeaders: [String:String] = [
+        var requestHeaders: [String: AnyObject] = [
             "oauth_consumer_key": consumerKey,
             "oauth_nonce": generateNonce(),
             "oauth_timestamp": getTimestamp(),
@@ -327,7 +350,7 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
     }
 
     func getRequestToken() {
-        var requestHeaders: [String:String] = [
+        var requestHeaders: [String: AnyObject] = [
             "oauth_callback": requestTokenCallback,
             "oauth_consumer_key": consumerKey,
             "oauth_nonce": generateNonce(),
@@ -372,15 +395,21 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
         return String(Int64(NSDate().timeIntervalSince1970))
     }
     
-    func sendRequest(URL: NSURL, params: [String:String], inout requestHeaders: [String: String], signingKey: String, method: String, completionHandler: (NSData!, NSURLResponse!, NSError!) -> Void) {
+    func sendRequest(var URL: NSURL, params: [String: AnyObject], inout requestHeaders: [String: AnyObject], signingKey: String, method: String, completionHandler: OAuthResponseHandler) {
     
-        var request = NSMutableURLRequest(URL: URL)
-        request.HTTPMethod = method
-        request.timeoutInterval = 60
-        request.HTTPShouldHandleCookies = false
-
-        //println("signing key: \(signingKey)")
-        var oAuthHeaders = params + requestHeaders
+        var newParams = [String:AnyObject]()
+        
+        for (key, param) in params {
+            if let pstring = param as? String {
+                if pstring != "" {
+                    newParams[key] = pstring
+                }
+            } else {
+                newParams[key] = param
+            }
+        }
+        
+        var oAuthHeaders = newParams + requestHeaders
 
         requestHeaders["oauth_signature"] = OAuthService.buildSignature(
             URL,
@@ -389,37 +418,38 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
             method: method
         )!
         
-        //var sig = oAuthHeaders["oauth_signature"]
-        //println("signature: \(sig)")
-        //request.setValue("json", forHTTPHeaderField: "Accepts")
+        var request: NSMutableURLRequest?
         
-        switch request.HTTPMethod {
+        switch method {
             case "POST", "DELETE", "PUT":
-                request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-                var bodyString = OAuthService.buildBodyString(params)
-                request.HTTPBody = bodyString
+                request = getRequest(URL, method: method)
+                request!.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+                var bodyString = OAuthService.buildBodyString(newParams)
+                request!.HTTPBody = bodyString
             default:
-                var x = 0
+                request = getRequest(NSURL(string: OAuthService.getAbsoluteURL(URL, params))!, method: method)
         }
         
-        request.setValue(buildAuthorizationHeader(requestHeaders), forHTTPHeaderField: "Authorization")
+        var header = ""
+        if addParamsToAuthHeader {
+            header = buildAuthorizationHeader(oAuthHeaders)
+            addParamsToAuthHeader = false
+        } else {
+            header = buildAuthorizationHeader(requestHeaders)
+        }
 
-        //var sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
-        //sessionConfig.HTTPAdditionalHeaders = ["Authorization" : authHeader]
-        
-        var session = NSURLSession.sharedSession()
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        
-        session.dataTaskWithRequest(request,
+        request!.setValue(header, forHTTPHeaderField: "Authorization")
+    
+        self.getSession().dataTaskWithRequest(request!,
             completionHandler: completionHandler
         ).resume()
     }
     
-    func sendRequest(URL: NSURL, inout requestHeaders: [String: String], signingKey: String, method: String, completionHandler: (NSData!, NSURLResponse!, NSError!) -> Void) {
+    func sendRequest(URL: NSURL, inout requestHeaders: [String: AnyObject], signingKey: String, method: String, completionHandler: OAuthResponseHandler) {
         
         self.sendRequest(
             URL,
-            params: [String:String](),
+            params: [String: AnyObject](),
             requestHeaders: &requestHeaders,
             signingKey: signingKey,
             method: method,
@@ -427,8 +457,70 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
         )
     }
     
-    func sortParamaters(params: [String: String]) -> [String: String] {
-        var parameters = [String: String]()
+    func sendRequest(URL: NSURL, json: NSData, inout requestHeaders: [String: AnyObject], signingKey: String, method: String, completionHandler: OAuthResponseHandler) {
+        
+        var request = getRequest(URL, method: method)
+
+        requestHeaders["oauth_signature"] = OAuthService.buildSignature(
+            URL,
+            params: requestHeaders,
+            signingKey: signingKey,
+            method: method
+        )!
+        
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+
+        request.HTTPBody = json
+        
+        var header = buildAuthorizationHeader(requestHeaders)
+        
+        request.setValue(header, forHTTPHeaderField: "Authorization")
+        
+        self.getSession().dataTaskWithRequest(request,
+            completionHandler: completionHandler
+        ).resume()
+    }
+    
+    func getRequestHeaders() -> [String: AnyObject] {
+        return [
+            "oauth_consumer_key": consumerKey,
+            "oauth_token": accessToken!,
+            "oauth_signature_method": "HMAC-SHA1",
+            "oauth_timestamp": getTimestamp(),
+            "oauth_nonce": generateNonce(),
+            "oauth_version": "1.0"
+        ]
+    }
+
+    func getSigningKey() -> String {
+        return "\(consumerSecret.percentEncode())&\(accessTokenSecret!.percentEncode())"
+    }
+    
+    func getRequest(URL: NSURL, method: String) -> NSMutableURLRequest {
+        
+        var request = NSMutableURLRequest(
+            URL: URL,
+            cachePolicy: .ReturnCacheDataElseLoad,
+            timeoutInterval: 120
+        )
+        
+        request.HTTPMethod = method
+        request.HTTPShouldHandleCookies = false
+        return request
+    }
+    
+    func getSession() -> NSURLSession {
+        var sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
+        
+        var session = NSURLSession(configuration: sessionConfig)
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        return session
+    }
+    
+    func sortParamaters(params: [String: AnyObject]) -> [String: AnyObject] {
+        var parameters = [String: AnyObject]()
         var keys = [String](params.keys)
         keys.sort({ return $0 < $1 })
         
@@ -439,28 +531,28 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
         return parameters
     }
     
-    class func getAbsoluteURL(URL: NSURL, _ params: [String:String]) -> String {
+    class func getAbsoluteURL(URL: NSURL, _ params: [String: AnyObject]) -> String {
         var urlString = URL.absoluteString!
         var paramString = buildParamString(params)
         return "\(urlString)\(paramString)"
     }
     
-    class func buildBodyString(bodyElements: [String:String]) -> NSData? {
+    class func buildBodyString(bodyElements: [String:AnyObject]) -> NSData? {
         
         var bodyString = ""
         
         for (k, v) in bodyElements {
             var key = k.percentEncode()
-            var value = v.gsub(" ", "+").percentEncode()
+            var value = "\(v)".gsub(" ", "+").percentEncode(ignore: ["+"])
             bodyString += "\(key)=\(value)&"
         }
         bodyString = bodyString.rtrim("& ")
         
-        //println(bodyString)
+        println(bodyString)
         return bodyString.dataUsingEncoding(NSUTF8StringEncoding)
     }
     
-    class func buildParamString(params: [String: String]) -> String {
+    class func buildParamString(params: [String: AnyObject]) -> String {
         if countElements(params) > 0 {
             var paramString = "?"
             
@@ -468,8 +560,8 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
             keys.sort({ return $0 < $1 })
 
             for key in keys {
-                var value = params[key]!
-                paramString += key.percentEncode()  + "=" + value.percentEncode()  + "&"
+                var value = "\(params[key]!)"
+                paramString += key.percentEncode()  + "=" + value.percentEncode(ignore: ["+", "-"])  + "&"
             }
             
             return paramString.rtrim("&")
@@ -478,13 +570,13 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
         }
     }
     
-    class func buildURL(URLString: String, params: [String:String]) -> NSURL? {
+    class func buildURL(URLString: String, params: [String: AnyObject]) -> NSURL? {
         var paramString = self.buildParamString(params)
         return NSURL(string: "\(URLString)\(paramString)")
     }
 
     
-    func buildAuthorizationHeader(params: [String: String], URL: NSURL? = nil) -> String {
+    func buildAuthorizationHeader(params: [String: AnyObject], URL: NSURL? = nil) -> String {
         var header: String = "OAuth "
         
         if URL != nil {
@@ -495,38 +587,118 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
         keys.sort({ return $0 < $1 })
         
         for key in keys {
-            header += key.percentEncode() + "=\"" + params[key]!.percentEncode()  + "\", "
+            var akey = key.percentEncode()
+            var aval = "\(params[key]!)".percentEncode()
+            header += "\(akey)=\"\(aval)\", "
         }
 
         return header.rtrim(", ")
     }
     
-    func redirectToUserLogin() {
+    class func jsonStringify(data: AnyObject) -> NSData? {
+        var error: NSError?
         
+        if let json = NSJSONSerialization.dataWithJSONObject(
+            data,
+            options: NSJSONWritingOptions(0),
+            error: &error
+            ) {
+                return json
+        } else {
+            println("There was an issue converting your object to json")
+            return nil
+        }
     }
-
-    func exchangeRequestTokenForAccessToken(requestToken: String) -> String {
-        return ""
-    }
-
     
     let nonceTable: [Character] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
     
-    func generateNonce() -> String {
+    func generateBoundaryString() -> String {
+        return String(format:"---------------------------%@", generateNonce(digits: 12))
+    }
+    
+    func generateNonce(digits: Int = 7) -> String {
         var nonce: String = ""
         
-        for i in 0...7 {
+        for i in 0...digits {
             var index = Int((arc4random() % 62))
             nonce += String([nonceTable[index]])
         }
 
         return nonce
     }
+        
+    func getDefaultCompletionHandler(action: ActionResponse, delegate: OAuthServiceResultsDelegate) -> OAuthResponseHandler {
+        
+        return getDefaultCompletionHandler { (data: NSData!) in
+            println("Action Completed: \(action.rawValue)")
+            delegate.resultsHaveBeenFetched(data, action: action)
+        }
+        
+    }
     
-    func readFullString(data: NSData) {
-        var s: String = NSString(data: data, encoding: encoding) as String
-        println("Connection Received Data \(s)")
+    func getDefaultCompletionHandler(handler: (NSData!) -> ()) -> OAuthResponseHandler {
+        return { (data, response, error) in
+            
+            if let r = response as? NSHTTPURLResponse  {
+                var statusCode = r.statusCode
+                switch statusCode {
+                case 200:
+                    println("Success: 200")
+                    //println(data.toString())
+                    handler(data)
+                case 408:
+                    println("408: Network Timeout")
+                case 415:
+                    println("415: Unsupported Media Type")
+                default:
+                    println("Status: \(statusCode)")
+                }
+            } else {
+                println(error)
+            }
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            
+        }
+    
+    }
+    
+    func doAsyncRequest(request: NSMutableURLRequest, handler: (NSData!) -> ()) {
+        
+        getSession()
+            .dataTaskWithRequest(request, completionHandler: getDefaultCompletionHandler(handler))
+            .resume()
+        
+    }
+    
+    func doAsyncRequest(request: NSMutableURLRequest, delegate: OAuthServiceResultsDelegate, action: ActionResponse) {
+        doAsyncRequest(request) { data in
+            delegate.resultsHaveBeenFetched(data, action: action)
+        }
+    }
+    
+    func postUnauthorizedRequest(URL: NSURL, params: [String:AnyObject], headers: [String:String], handler: (NSData!) -> ()) {
+        let request = getRequest(URL, method: "POST")
+        
+        for (header, value) in headers {
+            request.setValue(header, forHTTPHeaderField: value)
+        }
+        
+        request.HTTPBody = OAuthService.buildBodyString(params)
+        doAsyncRequest(request, handler: handler)
+    }
+    
+    func sendBasicRequest(URL: NSURL, delegate: OAuthServiceResultsDelegate, action: ActionResponse) {
+        var request = getBasicAuthorizationRequest(URL)
+        doAsyncRequest(request, delegate: delegate, action: action)
+    }
+    
+    func getBasicAuthorizationRequest(URL: NSURL, method: String = "GET") -> NSMutableURLRequest {
+        let request = getRequest(URL, method: method)
+        let encodedAuth = "Basic " + "\(consumerKey):\(personalKey)".base64;
+        request.addValue(encodedAuth, forHTTPHeaderField: "Authorization")
+        return request
     }
     
     var response: NSURLResponse?

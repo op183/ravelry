@@ -11,15 +11,12 @@ import UIKit
 class PatternViewController: BaseRavelryTableViewController, NSURLConnectionDataDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIPopoverPresentationControllerDelegate, OAuthServiceResultsDelegate {
     var pattern: Pattern?
     var segueAction: String = ""
+    var selectedImageIndex: Int = 0
+    var photos = [UIImage]()
     
-    @IBAction func linkTouch(sender: UIButton) {
-        
-    }
-    
-    @IBOutlet weak var linkButton: UIButton!
     @IBOutlet weak var navTitle: UINavigationItem!
     @IBOutlet weak var yarnTitle: UILabel!
-    @IBOutlet weak var notesTitle: UILabel!
+    @IBOutlet weak var notesTitle: UITextView!
     @IBOutlet weak var needleSizeTitle: UILabel!
     @IBOutlet weak var gaugeTitle: UILabel!
     @IBOutlet weak var yardageTitle: UILabel!
@@ -27,51 +24,19 @@ class PatternViewController: BaseRavelryTableViewController, NSURLConnectionData
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        var action = ""
-        var imageName = ""
-        
-        if ravelryUser!.hasFavorite(pattern!.id) {
-            action = "unfavoritePattern:"
-            imageName = "unfavorite"
-        } else {
-            action = "favoritePattern:"
-            imageName = "favorite"
-        }
-
-        var menuButtons: [UIBarButtonItem] = [
+        navigationItem.setRightBarButtonItem(
             UIBarButtonItem(
-                image: UIImage(named: imageName),
+                image: UIImage(named: "circle-menu")!.doScaling(25, 25),
                 style: .Plain,
                 target: self,
-                action: Selector(action)
-            )
-        ]
+                action: Selector("showPatternActivities:")
+            ),
+            animated: true
+        )
+        photos = pattern!.getFullsizeImages()
         
-        if pattern!.pdfURL != nil {
-            menuButtons.append(
-                UIBarButtonItem(
-                    image: UIImage(named: "pdf"),
-                    style: .Plain,
-                    target: self,
-                    action: Selector("selectPDF:")
-                )
-            )
-        }
-
-        if pattern!.downloadURL != nil {
-            menuButtons.append(
-                UIBarButtonItem(
-                    image: UIImage(named: "download"),
-                    style: .Plain,
-                    target: self,
-                    action: Selector("selectDownload:")
-                )
-            )
-        }
-
-        navigationItem.setRightBarButtonItems(menuButtons, animated: true)
-
         photoCollection.dataSource = self
+        photoCollection.delegate = self
         
         navTitle.title = pattern!.name
         
@@ -88,9 +53,7 @@ class PatternViewController: BaseRavelryTableViewController, NSURLConnectionData
         
         needleSizeTitle.text = ""
         for needle in pattern!.needles {
-            if needle.name != nil {
-                needleSizeTitle.text! += needle.name! + "; "
-            }
+            needleSizeTitle.text! += "\(needle.name); "
         }
 
         if pattern!.notes != nil {
@@ -109,9 +72,9 @@ class PatternViewController: BaseRavelryTableViewController, NSURLConnectionData
         if pattern!.yarnWeightDescription != nil {
             yarnTitle.text = pattern!.yarnWeightDescription
         } else {
-            for yarn in pattern!.yarns {
-                if yarn.name != nil {
-                    yarnTitle.text! += yarn.name! + "; "
+            for pack in pattern!.packs {
+                if let y = pack.yarn {
+                    yarnTitle.text! += "\(y.name); "
                 }
             }
         }
@@ -126,96 +89,73 @@ class PatternViewController: BaseRavelryTableViewController, NSURLConnectionData
         return pattern!.getPhotoCount()
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        selectedImageIndex = indexPath.row
         
+        println("Did Select \(indexPath.row)")
+        
+        if let popover = self.storyboard?.instantiateViewControllerWithIdentifier("patternImagePopover") as? ImagePopover {
+            
+            popover.currentSlideIndex = selectedImageIndex
+            popover.slides = photos
+            
+            popover.modalPresentationStyle = .OverCurrentContext
+            self.presentViewController(popover, animated: true, completion: nil)
+        }
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         var cell = collectionView.dequeueReusableCellWithReuseIdentifier(
                 "patternImage",
                 forIndexPath: indexPath
             ) as? PatternPhotoCell
         
-        cell!.setMipmap(pattern!.getMipmapAtIndex(indexPath.row)!)
-        let tap = UITapGestureRecognizer()
-        tap.addTarget(self, action: Selector("selectImageForPopover:"))
-        cell!.addGestureRecognizer(tap)
+        cell!.setPhotoSet(pattern!.getPhotoSetAtIndex(indexPath.row)!)
+
         return cell!
     }
-
-    @IBAction func unfavoritePattern(sender: AnyObject) {
-        ravelryUser!.destroyFavorite(pattern!.id, delegate: self)
-    }
     
-    @IBAction func favoritePattern(sender: AnyObject) {
-        let alert = DialogueController(
-            title: "Favorite \(pattern!.name)?",
-            message: ""
+    //Actions
+    @IBAction func showPatternActivities(sender: AnyObject) {
+
+        let activityVC = PatternActivityController(
+            context: self,
+            pattern: pattern!
         )
+        var x = 0
+        var y = (x == 0)
         
-        alert.addTextField(placeholder: "Notes")
-        alert.addTextField(placeholder: "Tags")
-        alert.addCancelAction()
-        
-        alert.addAction("Save", handler: {(action: UIAlertAction!) in
-            
-            var comment: String = alert.getTextFieldAtIndex(0)
-            var tags: String = alert.getTextFieldAtIndex(1)
-
-            ravelryUser?.addFavorite(self.pattern!, comment: comment, tags: tags, delegate: self)
-        })
-        alert.present(context: self)
-    }
-    
-    @IBAction func selectImageForPopover(sender: UIGestureRecognizer) {
-        println("Selecting Image View")
-
-        var popover = self.storyboard?.instantiateViewControllerWithIdentifier("patternImagePopover") as? ImagePopover
-        
-        var selectedImage = (sender.view as? PatternPhotoCell)!.getMipmap()
-
-        popover!.selectedImage = selectedImage
-
-        popover!.modalPresentationStyle = .Popover
-        
-        
-        popover!.preferredContentSize = CGSizeMake(300, 300)
-        if let presentationController = popover!.popoverPresentationController {
-            presentationController.delegate = self
-            presentationController.permittedArrowDirections = .Up
-            presentationController.sourceView = sender.view
-            presentationController.sourceRect = CGRectMake(0, 0, 50, 50)
-            self.presentViewController(popover!, animated: true, completion: nil)
-        }
-    }
-    
-    @IBAction func selectPDF(sender: AnyObject) {
-        println("PDF Selected")
-    }
-    
-    @IBAction func selectDownload(sender: AnyObject) {
-        segueAction = "selectDownload";
-        performSegueWithIdentifier("showPatternLink", sender: self)
+        self.presentViewController(activityVC, animated: true, completion: nil)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        var controller = segue.destinationViewController as? PatternDownloadController
-        switch segueAction {
-            case "selectDownload":
-                controller!.link = self.pattern!.downloadLocation
-            default:
-                println("'\(segueAction)' is not an authorized action!")
-            
+        if let controller = segue.destinationViewController as? PatternDownloadController {
+            controller.link = self.pattern!.downloadLocation
+        } else if let controller = segue.destinationViewController as? ProjectViewController {
+            controller.projectId = (sender as ViewProject).project!.id
+        } else if let controller = segue.destinationViewController as? PatternDownloadController {
+            if let activity = sender as? ViewPDF {
+                
+            } else if let activity = sender as? ViewDownloadable {
+                
+            }
+        } else {
+            println("'\(segueAction)' is not an authorized action!")
         }
+
         segueAction = ""
     }
     
-    func resultsHaveBeenFetched(results: NSData!, action: String) {
+    func resultsHaveBeenFetched(data: NSData!, action: ActionResponse) {
         switch action {
-        case "FavoritePattern":
-            println("Pattern has been favorited")
-        case "DestroyPattern":
-
-            println("Pattern has been deleted")
-        default:
-            println("\(action) is not a recgonized action.")
+            case .PatternFavorited:
+                println("Pattern has been favorited")
+            default:
+                println("\(action) is not a recgonized action.")
         }
     }
 

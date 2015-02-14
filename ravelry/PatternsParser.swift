@@ -11,19 +11,20 @@ import Foundation
 class PatternsParser<T>: RavelryJSONParser<T> {
     
     var patterns = [Pattern]()
-    var loadAction = "PatternsLoaded"
+    var loadAction = ActionResponse.PatternsRetrieved
     var numPatterns = 0
     
-    override init(mDelegate: MipmapLoaderDelegate, aDelegate: AsyncLoaderDelegate) {
+    override init(mDelegate: PhotoSetLoaderDelegate, aDelegate: AsyncLoaderDelegate) {
         super.init(mDelegate: mDelegate, aDelegate: aDelegate)
     }
 
     override func parse(json: NSDictionary) -> JSONParser<T> {
+        super.parse(json)
         if let patterns = json["patterns"] as? NSArray {
-            numPatterns = patterns.count
+            numPatterns += patterns.count
             for pattern in patterns {
                 if let p = self.parsePatternResult((pattern as? NSDictionary)!) {
-                    self.patterns.append(p)
+                    self.patterns.append(p) 
                 }
             }
         }
@@ -33,7 +34,7 @@ class PatternsParser<T>: RavelryJSONParser<T> {
     override func checkProgress(remaining: Int, _ total: Int) {
         if remaining == total {
             ++patternsLoaded
-            //println("Pattern has loaded \(patternsLoaded) \\ \(numPatterns)")
+            println("Pattern has loaded \(patternsLoaded) \\ \(numPatterns)")
             if numPatterns == patternsLoaded {
                 aDelegate!.loadComplete(self, action: loadAction)
             }
@@ -44,6 +45,7 @@ class PatternsParser<T>: RavelryJSONParser<T> {
     override func imageHasLoaded(remaining: Int, _ total: Int) {
         super.imageHasLoaded(remaining, total)
         checkProgress(remaining, total)
+        //println("Image has loaded \(total) / \(remaining)")
     }
 
     private

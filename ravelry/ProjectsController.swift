@@ -9,36 +9,74 @@
 import UIKit
 
 class ProjectsController: BaseProjectsController {
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
-        segueAction = "showProject"
-        self.projects = ravelryUser!.getProjects()
-        (self.view as UITableView).reloadData()
-    }
 
-    override func viewDidAppear(animated: Bool) {
-        if countElements(ravelryUser!.getProjects()) != self.projects.count {
-            self.projects = ravelryUser!.getProjects()
-            (self.view as UITableView).reloadData()
-        }
+        
     }
     
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.row == projects.count {
+            if let cell = tableView.dequeueReusableCellWithIdentifier("viewMoreCell", forIndexPath: indexPath) as? ViewMoreCell {
+                cell.selected = true
+            }
+
+            ravelryUser!.loadProjects {
+                tableView.reloadData()
+            }
+            
+        } else {
+            selectedProjectIndex = indexPath.row
+            var project = projects[selectedProjectIndex!]
+            showOverlay()
+            mOAuthService.getProject(project.id, delegate: self)
+        }
+    }
+
+
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath) as? ProjectCell
         
-        var project = projects[indexPath.row]
-        
-        if let craft = project.craft {
-            switch craft {
+        if indexPath.row == projects.count {
+            var cell = tableView.dequeueReusableCellWithIdentifier("viewMoreCell", forIndexPath: indexPath) as ViewMoreCell
+            cell.selected = false
+            return cell
+        } else {
+            var cell = tableView.dequeueReusableCellWithIdentifier("projectCell", forIndexPath: indexPath) as ProjectCell
+            
+            let project = projects[indexPath.row]
+            
+            cell.titleLabel.text = project.name
+            cell.thumbnailView.image = project.getThumbnail()
+            
+            switch project.craft {
                 case .Knitting:
-                    cell!.craftView!.image = UIImage(named: "knitting-needles")
+                    cell.craftView!.image = UIImage(named: "knitting-needles")
                 case .Crochet:
-                    cell!.craftView!.image = UIImage(named: "crochet-hooks")
+                    cell.craftView!.image = UIImage(named: "crochet-hooks")
                 default:
                     println("Not a listed craft!")
             }
+            return cell
         }
-        return cell!
     }
+        
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        var projectController = segue.destinationViewController as ProjectViewController
+        hideOverlay()
+        projectController.projectId = projects[selectedProjectIndex!].id
+    }
+    
+    override func resultsHaveBeenFetched(data: NSData!, action: ActionResponse) {
+        switch action {
+            default:
+                ProjectParser<NSDictionary>(
+                    mDelegate: self,
+                    aDelegate: self,
+                    project: projects[selectedProjectIndex!]
+                ).loadData(data)
+
+        }
+    }
+    
 }

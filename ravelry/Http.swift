@@ -7,26 +7,18 @@
 //
 
 import UIKit
+typealias URLSessionHandler = (data: NSData!, response: NSURLResponse!, error: NSError!) -> ()
 
 class Http {
     
     
-    class func request(urlString: String?, handler: (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void) {
-        if urlString != nil {
-            var loc = urlString?.match("^(http|https):\\/\\/(.*?)(\\/.*$|$)")
-            //println("Location: \(loc)")
-            if loc != nil && loc!.count == 3 {
-                var url = NSURL(
-                    scheme: loc![0],
-                    host: loc![1],
-                    path: loc![2]
-                )
-                self.request(url, headers: nil, handler: handler)
-            }
+    class func request(urlString: String, handler: URLSessionHandler) {
+        if let URL = NSURL(string: urlString) {
+            self.request(URL, headers: nil, handler: handler)
         }
     }
     
-    class func request(url: NSURL?, handler: (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void) {
+    class func request(url: NSURL?, handler: URLSessionHandler) {
         if url != nil {
             self.request(
                 url,
@@ -36,7 +28,7 @@ class Http {
         }
     }
 
-    class func request(url: NSURL?, headers: [String: String]?, handler: (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void) {
+    class func request(url: NSURL?, headers: [String: String]?, handler: URLSessionHandler) {
         self.request(
             url,
             headers: headers,
@@ -45,44 +37,41 @@ class Http {
         )
     }
     
-    class func request(url: NSURL?, headers: [String: String]?, params: [String:String]?, handler: (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void, method: String = "GET") {
+    class func request(url: NSURL?, headers: [String: String]?, params: [String:String]?, method: String = "GET", handler: URLSessionHandler) {
         if url != nil {
             
-            var request = NSMutableURLRequest(URL: url!)
-            request.HTTPMethod = method
+            var request = getRequest(url!, method: method)
+            
             if headers != nil {
                 for (key, value) in headers! {
                     request.addValue(value, forHTTPHeaderField: key)
                 }
             }
-            
-            NSURLConnection.sendAsynchronousRequest(
-                request,
-                queue: NSOperationQueue.mainQueue(),
+
+            getSession().dataTaskWithRequest(request,
                 completionHandler: handler
-            )
-            
+            ).resume()
         }
     }
     
-    class func post(URL: String, params: [String:String]?, handler: (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void) {
+    class func post(URL: String, params: [String:String]?, handler: URLSessionHandler) {
         self.request(
             NSURL(string: URL),
             headers: nil,
             params: params,
-            handler: handler,
-            method: "POST"
+            method: "POST",
+            handler: handler
         )
     }
     
     
-    class func get(URL: String, params: [String:String]?, handler: (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void) {
+    class func get(URL: String, params: [String:String]?, handler: URLSessionHandler) {
         self.request(
             NSURL(string: URL),
             headers: nil,
             params: params,
-            handler: handler,
-            method: "GET"
+            method: "GET",
+            handler: handler
         )
     }
     
@@ -92,5 +81,26 @@ class Http {
     
     class func put() {
         
+    }
+    
+    class func getRequest(URL: NSURL, method: String) -> NSMutableURLRequest {
+        var request = NSMutableURLRequest(
+            URL: URL,
+            cachePolicy: .ReturnCacheDataElseLoad,
+            timeoutInterval: 60
+        )
+        
+        request.HTTPMethod = method
+        request.HTTPShouldHandleCookies = false
+        return request
+    }
+    
+    class func getSession() -> NSURLSession {
+        var sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
+        
+        var session = NSURLSession(configuration: sessionConfig)
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        return session
     }
 }

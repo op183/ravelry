@@ -78,4 +78,13 @@ class ArticleContent: UIViewController, NSURLConnectionDelegate {
     func connectionDidFinishLoading(connection: NSURLConnection) {
         println("Connection finished loading")
     }
+    
+    override func shouldAutorotate() -> Bool {
+        return false
+    }
+    
+    override func supportedInterfaceOrientations() -> Int {
+        return UIInterfaceOrientation.Portrait.rawValue
+    }
+
 }

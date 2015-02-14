@@ -8,18 +8,24 @@
 
 import UIKit
 
-class BaseResultsController: BaseRavelryTableViewController, AsyncLoaderDelegate, OAuthServiceResultsDelegate, MipmapLoaderDelegate, UITableViewDataSource, UITableViewDelegate {
+class BaseResultsController: BaseRavelryTableViewController, AsyncLoaderDelegate, OAuthServiceResultsDelegate, PhotoSetLoaderDelegate, UITableViewDataSource, UITableViewDelegate {
     
-    var patterns = [Pattern]()
-    var patternsById = [Int: Pattern]()
-    var selectedPatternId: Int?
+    var patterns: [Pattern] {
+        return [Pattern]()
+    }
+
+    var totalRecords: Int {
+        return 0
+    }
+    
+    var selectedPatternIndex: Int = 0
     var segueAction: String?
     
-    func resultsHaveBeenFetched(data: NSData!, action: String) {
+    func resultsHaveBeenFetched(data: NSData!, action: ActionResponse) {
         PatternParser<NSDictionary>(
             mDelegate: self,
             aDelegate: self,
-            pattern: patternsById[selectedPatternId!]!
+            pattern: patterns[selectedPatternIndex]
         ).loadData(data)
     }
     
@@ -27,72 +33,38 @@ class BaseResultsController: BaseRavelryTableViewController, AsyncLoaderDelegate
         
     }
     
-    func loadComplete(object: AnyObject, action: String) {
+    func loadComplete(object: AnyObject, action: ActionResponse) {
         self.performSegueWithIdentifier(segueAction!, sender: self)
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         let patternView = segue.destinationViewController as PatternViewController
-        patternView.pattern = patternsById[selectedPatternId!]
-        println("Getting Pattern \(selectedPatternId!)")
-    }
-
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        let indexPath = tableView.indexPathForSelectedRow();
-        let currentCell = tableView.cellForRowAtIndexPath(indexPath!) as SearchResult;
-        
-        selectedPatternId = currentCell.pattern!.id
-        
-        mOAuthService.getPattern(selectedPatternId!, delegate: self, action: "GetPattern")
+        hideOverlay()
+        patternView.pattern = patterns[selectedPatternIndex]
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        var cell = tableView.dequeueReusableCellWithIdentifier("searchCell", forIndexPath: indexPath) as SearchResult
-        let pattern = patterns[indexPath.row]
-        patternsById[pattern.id] = pattern
-        
-        cell.pattern = pattern
-        cell.cellLabel.text = pattern.name
-        cell.cellImage.image = pattern.getThumbnail()!
-        return cell
-        
+
+        if patterns.count == indexPath.row {
+            var cell = tableView.dequeueReusableCellWithIdentifier("viewMoreCell", forIndexPath: indexPath) as ViewMoreCell
+            return cell
+        } else {
+            var cell = tableView.dequeueReusableCellWithIdentifier("searchCell", forIndexPath: indexPath) as SearchResult
+            
+            let pattern = patterns[indexPath.row]
+            cell.pattern = pattern
+            cell.cellLabel.text = pattern.name
+            cell.cellImage.image = pattern.getThumbnail()!
+            
+            return cell
+        }
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.patterns.count
-    }
-    
-    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView {
-
-        indicator = UIActivityIndicatorView(frame: CGRectMake(0,0, 50, 50)) as UIActivityIndicatorView
-        indicator!.center = self.view.center
-        indicator!.hidesWhenStopped = true
-        indicator!.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
-        view.addSubview(indicator!)
-
-        startIndicator()
-        return indicator!
-    }
-    
-    func stopIndicator() {
-        if indicator != nil {
-            println("Stopping Indicator")
-            indicator!.stopAnimating()
-            indicator!.hidden = true
+        if totalRecords > patterns.count {
+            return patterns.count + 1
+        } else {
+            return patterns.count
         }
     }
-
-    func startIndicator() {
-        if indicator != nil {
-            indicator!.hidden = false
-            indicator!.startAnimating()
-        }
-    }
-    
-    private
-    var indicator: UIActivityIndicatorView?
-
-    
 }

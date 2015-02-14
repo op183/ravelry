@@ -26,8 +26,8 @@ class PatternPhotoCell: UICollectionViewCell {
         self.userInteractionEnabled = true
     }
     
-    func setMipmap(mipmap: Mipmap) {
-        self.mipmap = mipmap
+    func setPhotoSet(photoSet: PhotoSet) {
+        self.photoSet = photoSet
         setThumbnail()
     }
     
@@ -35,19 +35,20 @@ class PatternPhotoCell: UICollectionViewCell {
         return fullsizeImage
     }
     
-    func getMipmap() -> Mipmap? {
-        return mipmap
+    func getMipmap() -> PhotoSet? {
+        return photoSet
     }
     
     private
-    var mipmap: Mipmap?
+    var photoSet: PhotoSet?
     
     func setThumbnail() {
-        if mipmap != nil {
+        if photoSet != nil {
             println("Setting thumbnail image")
-            thumbnailImage = mipmap!.getThumbnailImage()
+            thumbnailImage = photoSet!.getThumbnailImage()
             patternPhotoImage.image = thumbnailImage
         }
     }
+ 
     
 }

@@ -8,13 +8,38 @@
 
 import UIKit
 
-class CategorySplitViewController: UISplitViewController {
-
+class CategorySplitViewController: UISplitViewController, UISplitViewControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
-        preferredDisplayMode = .PrimaryOverlay
-        preferredPrimaryColumnWidthFraction = CGFloat(0.3)
+        //presentsWithGesture = true
+        //delegate = self
+        //preferredDisplayMode = .PrimaryOverlay
+        //preferredPrimaryColumnWidthFraction = CGFloat(0.3)
     }
     
+    func splitViewController(splitViewController: UISplitViewController, showViewController vc: UIViewController, sender: AnyObject?) -> Bool {
+        println("Show ViewController")
+        return false
+    }
+    
+    func splitViewController(splitViewController: UISplitViewController, showDetailViewController vc: UIViewController, sender: AnyObject?) -> Bool {
+        println("Show DetailViewController")
+        return false
+    }
+    
+    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
+        println("Collapse Secondary ViewController")
+        return false
+    }
+    
+    func primaryViewControllerForCollapsingSplitViewController(splitViewController: UISplitViewController) -> UIViewController? {
+        println("Primary ViewController for Collapsing SplitViewController")
+        return nil
+    }
+    
+    func primaryViewControllerForExpandingSplitViewController(splitViewController: UISplitViewController) -> UIViewController? {
+        println("Primary ViewController for Expanding SplitViewController")
+        return nil
+    }
     
 }

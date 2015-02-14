@@ -28,26 +28,7 @@ class BaseRavelryTableViewController: UITableViewController {
             NSForegroundColorAttributeName: UIColor.blackColor()
         ]
         
-        let backButton = UIBarButtonItem(
-            title: "<",
-            style: UIBarButtonItemStyle.Plain,
-            target: self,
-            action: Selector("navigateBack:")
-        )
-        
-        backButton.setTitleTextAttributes(
-            [
-                NSFontAttributeName: BebasNeueBold24!,
-                NSForegroundColorAttributeName: UIColor.blackColor()
-            ],
-            forState: UIControlState.Normal
-        )
-        navigationItem.setLeftBarButtonItem(backButton, animated: true)
-        //navigationItem.backBarButtonItem = backButton
+        addBackButton()
     }
-    
-    @IBAction func navigateBack(sender: AnyObject) {
-        navigationController?.popViewControllerAnimated(true)
-    }
-    
+
 }

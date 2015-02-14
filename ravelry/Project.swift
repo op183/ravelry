@@ -8,50 +8,59 @@
 
 import UIKit
 
-enum Craft: Int {
-    case Knitting = 2
-    case Crochet = 1
-}
+class Project: BaseRavelryModelWithPhotos {
+    var craft: Craft = .Knitting
 
-class Project: BaseRavelryModel {
-    var id: Int
-    var name: String
-    var craft: Craft?
-
+    var pattern: Pattern?
     var patternId: Int
     var patternSource: PatternSource?
     var patternName: String
     var patternAuthor: Author?
-    
-    var firstPhoto: Mipmap
-    var pattern: Pattern?
     var permalink: NSURL?
     
-    var rating: String?
-    var size: String?
-    var photoCount: Int?
+    var rating: String = ""
+    var size: String = ""
 
-    var favoritesCount: Int?
-    var commentsCount: Int?
+    var favoritesCount: Int = 0
+    var commentsCount: Int = 0
+
+    var madeForUser: User?
     
-    init(id: Int, patternId: Int, name: String, patternName: String, photo: Mipmap, craft: Craft? = nil) {
-        self.id = id
-        self.patternId = patternId
-        self.name = name
-        self.patternName = patternName
-        self.firstPhoto = photo
+    var packs = [Pack]()
+    var needles = [Needle]()
+    
+    var notes: String = ""
+    var tags = [String]()
+
+    var status: Status = .InProgress
+    var progress: Int = 0
+    var started: NSDate?
+    var completed: NSDate?
+    
+    override init() {
+        self.patternId = 0
+        self.patternName = ""
         super.init()
-        self.craft = craft
+    }
+    
+    init(id: Int, patternId: Int, name: String, patternName: String, photo: PhotoSet, craft: Craft? = nil) {
+        self.patternId = patternId
+        self.patternName = patternName
+        super.init(id: id, name: name, photo: photo)
+        if let c = craft {
+            self.craft = c
+        }
     }
     
     func getPattern() -> Pattern {
         return Pattern(id: self.patternId, name: self.patternName)
     }
-
-    func getThumbnail() -> UIImage? {
-        if let thumbnail = firstPhoto.getThumbnail() {
-            return thumbnail.image
-        }
-        return nil
+    
+    func setStatus() {
+        
+    }
+    
+    func destroyPack() {
+        
     }
 }

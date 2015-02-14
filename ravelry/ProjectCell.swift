@@ -9,10 +9,7 @@
 import UIKit
 
 class ProjectCell: UITableViewCell {
-    
     @IBOutlet weak var thumbnailView: UIImageView!
     @IBOutlet weak var craftView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
-    
-    var project: Project?
 }

@@ -8,6 +8,33 @@
 
 import UIKit
 
+enum CategoryType: String {
+    case Category = "Categories"
+    case Attribute = "Attributes"
+    case Weight = "Weight"
+    case Yardage = "Yardage"
+    case HookSize = "Hook Size"
+    case NeedleSize = "Needle Size"
+    case Craft = "Craft"
+    case Fiber = "Fiber"
+    case Fit = "Gender/Age/Size/Fit"
+    case None = "query"
+    
+    var searchPattern: String {
+        get {
+            switch self {
+                case .Craft: return "craft"
+                case .Weight: return "weight"
+                case .Yardage: return "yardage-in"
+                case .HookSize: return "hooks"
+                case .NeedleSize: return "needles"
+                case .Fiber: return "fibertype"
+                case .Fit: return "fit"
+                default: return "query"
+            }
+        }
+    }
+}
 
 class PatternCategory: BaseRavelryModel {
     var parent: PatternCategory?

@@ -10,14 +10,20 @@ import UIKit
 
 class FavoritesParser<T>: PatternsParser<T> {
     
-    override init(mDelegate: MipmapLoaderDelegate, aDelegate: AsyncLoaderDelegate) {
+    override init(mDelegate: PhotoSetLoaderDelegate, aDelegate: AsyncLoaderDelegate) {
         super.init(mDelegate: mDelegate, aDelegate: aDelegate)
-        loadAction = "FavoritesLoaded"
+        loadAction = .FavoritesRetrieved
     }
 
     override func parse(json: NSDictionary) -> JSONParser<T> {
+        super.parse(json)
         if let favorites = json["favorites"] as? NSArray {
             numPatterns = favorites.count
+
+            if numPatterns == 0 {
+                aDelegate!.loadComplete(self, action: loadAction)
+            }
+            
             for favorite in favorites {
 
                 if let type = favorite["type"] as? String {

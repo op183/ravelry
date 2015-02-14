@@ -8,17 +8,12 @@
 
 import UIKit
 
-class CategorySearchController: BaseRavelryTableViewController, UITableViewDelegate, UITableViewDataSource {
+class CategorySearchController: UITableViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 
-    //green : 131	189	167
-    //orange : 239	160	15	
-    //pale : 198	214	187	
-    //gold : 248	209	43	
-    //brown : 133	95	58
     var categories = [PatternCategory]()
     var query = QueryBuilder()
     var index = 0
-
+    
     var expandedCells = [Int:Bool]()
     var selectedCells = [Int:Bool]()
     var visibleCells = [Int:Bool]()
@@ -28,18 +23,61 @@ class CategorySearchController: BaseRavelryTableViewController, UITableViewDeleg
         for (k, v) in ravelryCategories {
             setCategory(k, v, type: getType(k))
         }
+        
+        let searchButton = UIBarButtonItem(
+            title: "GO",
+            style: UIBarButtonItemStyle.Plain,
+            target: self,
+            action: Selector("searchPatterns:")
+        )
+        
+        searchButton.setTitleTextAttributes(
+            [
+                NSFontAttributeName: UIFont(name: "BebasNeueBold", size: 24)!,
+                NSForegroundColorAttributeName: UIColor.blackColor()
+            ],
+            forState: UIControlState.Normal
+        )
 
+        
+        navigationItem.setRightBarButtonItem(searchButton, animated: true)
+        var searchBar = UISearchBar()
+        searchBar.imageForSearchBarIcon(.Clear, state: .Normal)
+        searchBar.returnKeyType = .Done
+        
+        searchBar.delegate = self
+        
+        navigationItem.titleView = searchBar
+    }
+
+    func searchBarTextDidEndEditing(searchBar: UISearchBar) {
     }
     
-    func getType(key: String) -> CategoryType {
-        switch key {
-        case "Attributes": return CategoryType.Attribute
-        case "Weight": return CategoryType.Weight
-        case "Hook Size": return CategoryType.HookSize
-        case "Yardage": return CategoryType.Yardage
-        default: return CategoryType.Category
-        }
+    func searchBarShouldEndEditing(searchBar: UISearchBar) -> Bool {
+        println("Search Bar Should End Editing")
+        return true
     }
+
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        println("Search Bar Did Begin Editing")
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        println("Search Bar Text Did Change: \(searchText)")
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        println("Done: \(searchBar.text)")
+        query.addParameter(searchBar.text, .None)
+        searchBar.resignFirstResponder()
+    }
+    
+    
+    
+    func getType(key: String) -> CategoryType {
+        return CategoryType(rawValue: key)!
+    }
+    
     
     func setCategory(key: String, _ value: AnyObject? = nil, type: CategoryType, parent: PatternCategory? = nil, tabs: Int = 0) -> PatternCategory {
         var tstring = ""
@@ -95,63 +133,28 @@ class CategorySearchController: BaseRavelryTableViewController, UITableViewDeleg
         return categories.count
     }
 
-    /*
+    
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        var h = CGFloat(44.0)
-        var w = tableView.frame.width
-        
-        var view = UIView(frame: CGRectMake(0, 0, w, h))
-        var label = UILabel(frame: CGRectMake(0, 0, 100, h))
-        var plus = UILabel(frame: CGRectMake(0, 0, 20, h))
+        var view = CollectionFilterHeaderView()
 
-        let bebas = UIFont(
-            name: "BebasNeueBold",
-            size: 20
+        view.crochetButton!.addTarget(
+            self,
+            action: Selector("filterResultsForCrochet:"),
+            forControlEvents: .TouchUpInside
         )
-        
-        label.font = bebas
-        plus.font = bebas
-        label.text = categories[section].name!
-        plus.text = "+"
-        
-        view.setTranslatesAutoresizingMaskIntoConstraints(false)
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
-        plus.setTranslatesAutoresizingMaskIntoConstraints(false)
 
-        view.addSubview(plus)
-        view.addSubview(label)
-        view.userInteractionEnabled = true
-
-        
-        let cellMarginX = NSLayoutConstraint(
-            item: plus,
-            attribute: .LeftMargin,
-            relatedBy: .GreaterThanOrEqual,
-            toItem: view,
-            attribute: .LeftMargin,
-            multiplier: 1,
-            constant: 20
+        view.knittingButton!.addTarget(
+            self,
+            action: Selector("filterResultsForKnitting:"),
+            forControlEvents: .TouchUpInside
         )
-        
-        view.addConstraint(cellMarginX)
-        
-        let titleMarginX = NSLayoutConstraint(
-            item: label,
-            attribute: .Leading,
-            relatedBy: .Equal,
-            toItem: plus,
-            attribute: .Trailing,
-            multiplier: 1,
-            constant: 15
-        )
-        
-
-        view.addConstraint(titleMarginX)
-
 
         return view
     }
-    */
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat(75.0)
+    }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
@@ -185,19 +188,9 @@ class CategorySearchController: BaseRavelryTableViewController, UITableViewDeleg
         }
         
         if selectedCells[category.index]! {
-            cell.backgroundColor = UIColor(
-                red: CGFloat(254.0/255.0),
-                green: CGFloat(221.0/255.0),
-                blue: CGFloat(108/255.0),
-                alpha: CGFloat(1.0)
-            )
+            cell.backgroundColor = Color.saffron.uiColor
         } else {
-            cell.backgroundColor = UIColor(
-                red: CGFloat(1.0),
-                green: CGFloat(1.0),
-                blue: CGFloat(1.0),
-                alpha: CGFloat(1.0)
-            )
+            cell.backgroundColor = UIColor.whiteColor()
         }
         
         return cell
@@ -210,7 +203,7 @@ class CategorySearchController: BaseRavelryTableViewController, UITableViewDeleg
         
         if category.children.count > 0 {
             if !expandedCells[category.index]! {
-                println("Expanding \(category.name): \(category.index)")
+                //println("Expanding \(category.name): \(category.index)")
 
                 expandedCells[category.index] = true
                 cell.switcher.text = "-"
@@ -223,29 +216,19 @@ class CategorySearchController: BaseRavelryTableViewController, UITableViewDeleg
                 }
                 
             } else {
-                println("Reducing \(category.name): \(category.index)")
+                //println("Reducing \(category.name): \(category.index)")
                 cell.switcher.text = "+"
                 reduceCell(category)
             }
         } else {
             if selectedCells[category.index]! {
-                println("Deselecting \(category.name!): \(category.index)")
+                //println("Deselecting \(category.name!): \(category.index)")
                 query.removeParameter(category.name!, category.type!)
-                cell.backgroundColor = UIColor(
-                    red: CGFloat(1.0),
-                    green: CGFloat(1.0),
-                    blue: CGFloat(1.0),
-                    alpha: CGFloat(1.0)
-                )
+                cell.backgroundColor = UIColor.whiteColor()
             } else {
-                println("Selecting \(category.name!): \(category.index)")
+                //println("Selecting \(category.name!): \(category.index)")
                 query.addParameter(category.name!, category.type!)
-                cell.backgroundColor = UIColor(
-                    red: CGFloat(254.0/255.0),
-                    green: CGFloat(221.0/255.0),
-                    blue: CGFloat(108/255.0),
-                    alpha: CGFloat(1.0)
-                )
+                cell.backgroundColor = Color.saffron.uiColor
             }
             selectedCells[category.index] = !selectedCells[category.index]!
         }
@@ -268,14 +251,75 @@ class CategorySearchController: BaseRavelryTableViewController, UITableViewDeleg
                 }
             }
         }
-        
     }
     
-    func resultsHaveBeenFetched(data: NSData!, action: String) {
+    func toggleButton(button: UIButton, queryParameter: String, queryType: CategoryType) {
         
+        println("Button is Enabled: \(button.selected)")
+        
+        button.selected = !button.selected
+        if button.selected {
+            selectButton(button)
+            query.addParameter(queryParameter, queryType)
+        } else {
+            deselectButton(button)
+            query.removeParameter(queryParameter, queryType)
+        }
     }
     
-    func loadComplete(object: AnyObject, action: String) {
-        //self.performSegueWithIdentifier(segueAction, sender: self)
+    func selectButton(button: UIButton) {
+        button.backgroundColor = Color.saffron.uiColor
+    }
+    
+    func deselectButton(button: UIButton) {
+        button.backgroundColor = Color.silver.uiColor
+    }
+    
+    func loadComplete(object: AnyObject, action: ActionResponse) {
+    }
+    
+    @IBAction func filterResultsForCrochet(sender: UIButton) {
+        toggleButton(sender, queryParameter: "crochet", queryType: .Craft)
+    }
+
+    @IBAction func filterResultsForKnitting(sender: UIButton) {
+        toggleButton(sender, queryParameter: "knitting", queryType: .Craft)
+    }
+
+    @IBAction func searchPatterns(sender: AnyObject) {
+        performSegueWithIdentifier("showCategoryDetailView", sender: self)
+    }
+ 
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        println("Preparing for Segue")
+        if let navController = segue.destinationViewController as? UINavigationController {
+            
+            if let collectionController = navController.viewControllers[0] as? CategoryCollectionController {
+                
+                if let svc = splitViewController {
+                    
+                    let searchButton = UIBarButtonItem(
+                        image: UIImage(named: "magnifying-glass"),
+                        style: UIBarButtonItemStyle.Plain,
+                        target: svc.displayModeButtonItem().target,
+                        action: svc.displayModeButtonItem().action
+                    )
+                    
+                    //collectionController.navigationItem.leftBarButtonItem = searchButton
+                    collectionController.navigationItem.leftBarButtonItem = svc.displayModeButtonItem()
+                    
+                }
+                
+                collectionController.pageCount = 2
+                collectionController.queryParams = query.getParams(["page_size": MAX_PATTERNS_PER_PAGE])
+                
+                collectionController.showLoader()
+
+                mOAuthService.getPatterns(
+                    collectionController.queryParams,
+                    delegate: collectionController
+                )
+            }
+        }
     }
 }

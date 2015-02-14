@@ -13,7 +13,7 @@ class PatternParser<T>: RavelryJSONParser<T>
 {
     var pattern: Pattern?
     var mipmapsLoaded: Int = 0
-    init(mDelegate: MipmapLoaderDelegate, aDelegate: AsyncLoaderDelegate, pattern: Pattern) {
+    init(mDelegate: PhotoSetLoaderDelegate, aDelegate: AsyncLoaderDelegate, pattern: Pattern) {
         super.init(mDelegate: mDelegate, aDelegate: aDelegate)
         self.pattern = pattern
     }
@@ -41,73 +41,16 @@ class PatternParser<T>: RavelryJSONParser<T>
         
         if let needles = p["pattern_needle_sizes"] as? NSArray {
             for needle in needles {
-                var n = filterValues(needle as NSDictionary)
-                
-                pattern!.needles.append(Needle(
-                    hook: n["hook"] as? String,
-                    USSize: n["us"] as? String,
-                    USSteel: n["us_steel"] as? String,
-                    metricSize: n["metric"] as? Float,
-                    knitting: n["knitting"] as? Bool,
-                    crochet: n["crochet"] as? Bool,
-                    name: n["name"] as? String
-                    ))
+                pattern!.needles.append(parseNeedleSize(needle as NSDictionary))
             }
         }
         
         if let packs = p["packs"] as? NSArray {
             for pack in packs {
-                var name: String?
-                var company: String?
-                var weightType: String?
-                var wpi: String?
-                var ply: String?
-                var minGauge: String?
-                var maxGauge: String?
-                var knitGauge: String?
-                var crochetGauge: String?
-                
-                
-                
-                if let yarn = pack["yarn"] as? NSDictionary {
-                    var y = filterValues(yarn)
-                    name = y["name"] as? String
-                    company = y["yarn_company_name"] as? String
-                }
-                
-                if let yarnWeight = pack["yarn_weight"] as? NSDictionary {
-                    var y = filterValues(yarnWeight)
-                    weightType = y["name"] as? String
-                    wpi = y["wpi"] as? String
-                    ply = y["ply"] as? String
-                    minGauge = y["minGauge"] as? String
-                    maxGauge = y["maxGauge"] as? String
-                    knitGauge = y["knitGauge"] as? String
-                    crochetGauge = y["crochetGauge"] as? String
-                }
-                
-                
-                pattern!.yarns.append(Yarn(
-                    name: name,
-                    company: company,
-                    weightType: weightType,
-                    wpi: wpi,
-                    ply: ply,
-                    minGauge: minGauge,
-                    maxGauge: maxGauge,
-                    knitGauge: knitGauge,
-                    crochetGauge: crochetGauge
-                    ))
-                
+                pattern!.packs.append(parsePack(pack as NSDictionary))
             }
         }
-        
-        if let photos = p["photos"] as? NSArray {
-            for photo in photos {
-                 pattern!.photos.append(loadMipmap(photo as? NSDictionary))
-            }
-        }
-        
+
         if let dlLocation = p["download_location"] as? NSDictionary {
             if let download = dlLocation["url"] as? String {
                 
@@ -142,6 +85,8 @@ class PatternParser<T>: RavelryJSONParser<T>
                 }
             }
         }
+        
+        pattern!.photos = parsePhotos(p["photos"] as? NSArray)
     }
     
     
@@ -149,10 +94,14 @@ class PatternParser<T>: RavelryJSONParser<T>
         super.imageHasLoaded(remaining, total)
         
         if remaining == total {
-            ++mipmapsLoaded
-            println("\(mipmapsLoaded) out of \(pattern?.photos.count) Mipmaps Loaded")
+            
+            if total > 0 {
+                ++mipmapsLoaded
+            }
+            
+            //println("\(mipmapsLoaded) out of \(pattern?.photos.count) Mipmaps Loaded")
             if mipmapsLoaded == pattern?.photos.count {
-                aDelegate!.loadComplete(self, action: "PatternLoaded")
+                aDelegate!.loadComplete(self, action: .PatternRetrieved)
             }
         }
     }
