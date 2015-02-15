@@ -54,7 +54,7 @@ class Favorite: BaseRavelryActivity, OAuthServiceResultsDelegate {
             
             ravelryUser!.addFavorite(self.pattern, comment: comment, tags: tags, delegate: self)
         })
-        alert.present(context: self.context!)
+        alert.present()
     }
     
     override func activityDidFinish(completed: Bool) {

@@ -643,20 +643,29 @@ class OAuthService: NSObject, NSURLConnectionDataDelegate {
             if let r = response as? NSHTTPURLResponse  {
                 var statusCode = r.statusCode
                 switch statusCode {
-                case 200:
-                    println("Success: 200")
-                    //println(data.toString())
-                    handler(data)
-                case 408:
-                    println("408: Network Timeout")
-                case 415:
-                    println("415: Unsupported Media Type")
-                default:
-                    println("Status: \(statusCode)")
+                    case 200:
+                        println("Success: 200")
+                        //println(data.toString())
+                        handler(data)
+                    case 404:
+                        println("404: Resource Not Found")
+                        AlertDialogueController("Resource Not Found", "The selected resource cannot be found.").present()
+                    case 408:
+                        println("408: Network Timeout")
+                        AlertDialogueController("Network Timeout", "The network timed out while attempting to complete your request.").present()
+                    case 415:
+                        println("415: Unsupported Media Type")
+                        AlertDialogueController("Unsupported Media Type", "You are attempting to upload an unsupported media type. The requested action cannot be completed.").present()
+                    default:
+                        AlertDialogueController("Something went wrong.", "Please try your request again later.")
+                        println("Status: \(statusCode)")
                 }
             } else {
                 println(error)
+                AlertDialogueController("Network Connectivity Issue", "There was a problem establishing a connection to the server.").present()
             }
+            
+            
             
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             

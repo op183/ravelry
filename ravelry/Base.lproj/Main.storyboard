@@ -1729,7 +1729,7 @@
                                                         <constraint firstAttribute="width" constant="75" id="Peg-Gn-kEu"/>
                                                     </constraints>
                                                 </view>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="onDrag" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zna-gS-cl4">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="onDrag" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zna-gS-cl4" customClass="ScrollingLabel" customModule="ravelry" customModuleProvider="target">
                                                     <rect key="frame" x="78" y="8" width="514" height="184"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <accessibility key="accessibilityConfiguration">
@@ -1874,10 +1874,10 @@
         <image name="tapemeasure" width="50" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="c39-qe-PAF"/>
-        <segue reference="8XA-Gh-s0V"/>
-        <segue reference="xA3-aD-xkD"/>
-        <segue reference="A88-tz-2mc"/>
         <segue reference="5Wd-Lh-ebC"/>
+        <segue reference="UwE-5m-eKa"/>
+        <segue reference="E6v-TN-HD6"/>
+        <segue reference="F6Y-7l-iGB"/>
+        <segue reference="A88-tz-2mc"/>
     </inferredMetricsTieBreakers>
 </document>

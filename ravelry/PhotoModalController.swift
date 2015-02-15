@@ -43,7 +43,7 @@ class PhotoModalController: ModalSwipeNavigator {
             }
             
             dialogue.addCancelAction()
-            dialogue.present(context: self)
+            dialogue.present()
         }
         
     }
@@ -71,7 +71,7 @@ class PhotoModalController: ModalSwipeNavigator {
             
             dialogue.addCancelAction()
             
-            dialogue.present(context: self)
+            dialogue.present()
         }
     }
     

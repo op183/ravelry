@@ -36,7 +36,7 @@ class Dequeue: BaseRavelryActivity {
     override func performActivity() {
         DialogueController(title: "Remove Pattern from Project Queue?").addCancelAction().addAction("OK") { (action) in
             ravelryUser!.removeFromQueue(self.pattern.id)
-        }.present(context: self.context!)
+        }.present()
     }
     
     override func activityDidFinish(completed: Bool) {

@@ -30,7 +30,8 @@
 		760DF3D61A8961B3009D7AF5 /* ViewPDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760DF3D51A8961B3009D7AF5 /* ViewPDF.swift */; };
 		760F38CC1A50A06E00509348 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760F38CB1A50A06E00509348 /* Photo.swift */; };
 		760F38CE1A50EBFB00509348 /* PatternsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760F38CD1A50EBFB00509348 /* PatternsParser.swift */; };
-		76225C6E1A85208800AFB997 /* ViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76225C6D1A85208800AFB997 /* ViewControllerExtension.swift */; };
+		76198E591A901E4A00A0B06A /* UIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76198E581A901E4A00A0B06A /* UIApplication.swift */; };
+		76225C6E1A85208800AFB997 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76225C6D1A85208800AFB997 /* UIViewController.swift */; };
 		76232F161A819375006DEA35 /* PackParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76232F151A819375006DEA35 /* PackParser.swift */; };
 		762E84A61A8A9ACD005F43A9 /* HamburgerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762E84A51A8A9ACD005F43A9 /* HamburgerButton.swift */; };
 		762E84A81A8AED0E005F43A9 /* ModalSwipeNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762E84A71A8AED0E005F43A9 /* ModalSwipeNavigator.swift */; };
@@ -111,6 +112,7 @@
 		76AED5301A55F5300065076F /* SIMPLIFICA Typeface.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 76AED52E1A55F4FB0065076F /* SIMPLIFICA Typeface.ttf */; };
 		76AED5321A55FBFD0065076F /* SprintF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AED5311A55FBFD0065076F /* SprintF.swift */; };
 		76AED5381A5627240065076F /* BaseRavelryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AED5371A5627240065076F /* BaseRavelryTableViewController.swift */; };
+		76BC9B281A9020AB005E6883 /* AlertDialogueController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BC9B271A9020AB005E6883 /* AlertDialogueController.swift */; };
 		76BE6D7B1A66C7C30014AF70 /* PatternPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BE6D7A1A66C7C30014AF70 /* PatternPhotoCell.swift */; };
 		76BE6D7D1A6784900014AF70 /* ImagePopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BE6D7C1A6784900014AF70 /* ImagePopover.swift */; };
 		76CCFB8D1A79F97F0045588D /* Threading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CCFB8C1A79F97F0045588D /* Threading.swift */; };
@@ -128,7 +130,8 @@
 		76EE649E1A79423600A4EB9B /* CategoryCollectionViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EE649D1A79423600A4EB9B /* CategoryCollectionViewFooter.swift */; };
 		76EE64A01A79B47D00A4EB9B /* CollectionFilterHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EE649F1A79B47D00A4EB9B /* CollectionFilterHeaderView.swift */; };
 		76EE64D21A79F15B00A4EB9B /* ProjectCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EE64D11A79F15B00A4EB9B /* ProjectCameraController.swift */; };
-		76EE86601A87089600E4CA40 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EE865F1A87089600E4CA40 /* UIViewExtension.swift */; };
+		76EE86601A87089600E4CA40 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76EE865F1A87089600E4CA40 /* UIView.swift */; };
+		76F99C121A900D850042C44B /* ScrollingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F99C111A900D850042C44B /* ScrollingLabel.swift */; };
 		76FC6D2F1A77E30200446E72 /* BaseRavelryCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FC6D2E1A77E30200446E72 /* BaseRavelryCollectionViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -170,7 +173,8 @@
 		760DF3D51A8961B3009D7AF5 /* ViewPDF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPDF.swift; sourceTree = "<group>"; };
 		760F38CB1A50A06E00509348 /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		760F38CD1A50EBFB00509348 /* PatternsParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatternsParser.swift; sourceTree = "<group>"; };
-		76225C6D1A85208800AFB997 /* ViewControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerExtension.swift; sourceTree = "<group>"; };
+		76198E581A901E4A00A0B06A /* UIApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIApplication.swift; sourceTree = "<group>"; };
+		76225C6D1A85208800AFB997 /* UIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
 		76232F151A819375006DEA35 /* PackParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PackParser.swift; sourceTree = "<group>"; };
 		762E84A51A8A9ACD005F43A9 /* HamburgerButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HamburgerButton.swift; sourceTree = "<group>"; };
 		762E84A71A8AED0E005F43A9 /* ModalSwipeNavigator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalSwipeNavigator.swift; sourceTree = "<group>"; };
@@ -258,6 +262,7 @@
 		76AED5311A55FBFD0065076F /* SprintF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprintF.swift; sourceTree = "<group>"; };
 		76AED5331A5605E30065076F /* ravelry-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ravelry-Bridging-Header.h"; sourceTree = "<group>"; };
 		76AED5371A5627240065076F /* BaseRavelryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseRavelryTableViewController.swift; sourceTree = "<group>"; };
+		76BC9B271A9020AB005E6883 /* AlertDialogueController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertDialogueController.swift; sourceTree = "<group>"; };
 		76BE6D7A1A66C7C30014AF70 /* PatternPhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatternPhotoCell.swift; sourceTree = "<group>"; };
 		76BE6D7C1A6784900014AF70 /* ImagePopover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePopover.swift; sourceTree = "<group>"; };
 		76CCFB8C1A79F97F0045588D /* Threading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Threading.swift; sourceTree = "<group>"; };
@@ -276,7 +281,8 @@
 		76EE649D1A79423600A4EB9B /* CategoryCollectionViewFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryCollectionViewFooter.swift; sourceTree = "<group>"; };
 		76EE649F1A79B47D00A4EB9B /* CollectionFilterHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionFilterHeaderView.swift; sourceTree = "<group>"; };
 		76EE64D11A79F15B00A4EB9B /* ProjectCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectCameraController.swift; sourceTree = "<group>"; };
-		76EE865F1A87089600E4CA40 /* UIViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		76EE865F1A87089600E4CA40 /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		76F99C111A900D850042C44B /* ScrollingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingLabel.swift; sourceTree = "<group>"; };
 		76FC6D2E1A77E30200446E72 /* BaseRavelryCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseRavelryCollectionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -420,6 +426,7 @@
 		765A3F691A46830700F361DD /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				76225C6D1A85208800AFB997 /* UIViewController.swift */,
 				69F752F81A3AC1BE003B11EB /* XMLParser.swift */,
 				762F7C411A41502B003274DB /* JSONParser.swift */,
 				766EEB061A520FD00086F69A /* Debug.swift */,
@@ -431,8 +438,9 @@
 				7684AF471A6DA78F0011F50D /* Dictionary.swift */,
 				764F60831A75625400894A88 /* QueryBuilder.swift */,
 				76AED5311A55FBFD0065076F /* SprintF.swift */,
-				76EE865F1A87089600E4CA40 /* UIViewExtension.swift */,
+				76EE865F1A87089600E4CA40 /* UIView.swift */,
 				760DF3CF1A894BAC009D7AF5 /* UIImage.swift */,
+				76198E581A901E4A00A0B06A /* UIApplication.swift */,
 				765377901A8586F900AD2AA9 /* UIColor.swift */,
 				765A3F6F1A46C66F00F361DD /* Http.swift */,
 				7650225E1A58D08100315E26 /* Hmac.swift */,
@@ -456,6 +464,7 @@
 				76EE649F1A79B47D00A4EB9B /* CollectionFilterHeaderView.swift */,
 				765C8B0C1A7C27E300E47106 /* NeedleSizeCell.swift */,
 				765C8B0E1A7C27ED00E47106 /* YarnCell.swift */,
+				76F99C111A900D850042C44B /* ScrollingLabel.swift */,
 				767D16561A89C49B0087A66A /* ViewMoreCell.swift */,
 				768A4F361A7CA7FB004209A2 /* AddYarnCell.swift */,
 				768A4F381A7CA815004209A2 /* AddNeedleCell.swift */,
@@ -529,6 +538,7 @@
 				7665994B1A6CBD6C001B3C8D /* BaseResultsController.swift */,
 				76D8D41B1A755DA5005E616A /* CategorySearchController.swift */,
 				76D8D4111A72AA81005E616A /* BaseProjectsController.swift */,
+				76BC9B271A9020AB005E6883 /* AlertDialogueController.swift */,
 				69E7FAE31A3B477000CC3B35 /* RSSFeed.swift */,
 				767DD5331A76E0B500A06072 /* CategorySplitViewController.swift */,
 				767DD5351A76E25E00A06072 /* CategoryCollectionController.swift */,
@@ -553,7 +563,6 @@
 				76AED50E1A5498D60065076F /* BaseRavelryNavigationController.swift */,
 				76AED5371A5627240065076F /* BaseRavelryTableViewController.swift */,
 				76FC6D2E1A77E30200446E72 /* BaseRavelryCollectionViewController.swift */,
-				76225C6D1A85208800AFB997 /* ViewControllerExtension.swift */,
 			);
 			name = controllers;
 			sourceTree = "<group>";
@@ -692,7 +701,7 @@
 				765C8B001A7AE8F100E47106 /* ProjectViewController.swift in Sources */,
 				69E7FAE61A3B4BA700CC3B35 /* ArticleContent.swift in Sources */,
 				766EEB071A520FD00086F69A /* Debug.swift in Sources */,
-				76EE86601A87089600E4CA40 /* UIViewExtension.swift in Sources */,
+				76EE86601A87089600E4CA40 /* UIView.swift in Sources */,
 				767D00841A70948B00D4E8A5 /* ProjectsParser.swift in Sources */,
 				765C8B111A7C334E00E47106 /* BaseRavelryModelWithPhotos.swift in Sources */,
 				765C8B091A7C26AD00E47106 /* NeedleSizeCollectionView.swift in Sources */,
@@ -720,6 +729,7 @@
 				760DF3CA1A888573009D7AF5 /* AddToQueue.swift in Sources */,
 				763FB57E1A8C16600051008C /* FileCache.swift in Sources */,
 				7656A90C1A8303A200EAC516 /* PhotoModalController.swift in Sources */,
+				76F99C121A900D850042C44B /* ScrollingLabel.swift in Sources */,
 				76EE64A01A79B47D00A4EB9B /* CollectionFilterHeaderView.swift in Sources */,
 				7680CBE31A43FB8900035C58 /* SearchResultsController.swift in Sources */,
 				760DF3C41A8884A2009D7AF5 /* Favorite.swift in Sources */,
@@ -738,6 +748,7 @@
 				7665994C1A6CBD6C001B3C8D /* BaseResultsController.swift in Sources */,
 				767DD5311A75F09700A06072 /* CategoryParser.swift in Sources */,
 				765899991A4681F800230E75 /* PatternSource.swift in Sources */,
+				76BC9B281A9020AB005E6883 /* AlertDialogueController.swift in Sources */,
 				760DF3D21A8952E0009D7AF5 /* Dequeue.swift in Sources */,
 				766599421A6B791B001B3C8D /* PatternViewController.swift in Sources */,
 				69F752DB1A3AB879003B11EB /* SearchViewController.swift in Sources */,
@@ -771,8 +782,9 @@
 				7650225F1A58D08100315E26 /* Hmac.swift in Sources */,
 				768A4F3D1A7EB25C004209A2 /* FormController.swift in Sources */,
 				767D00801A7079A600D4E8A5 /* PatternDownloadController.swift in Sources */,
+				76198E591A901E4A00A0B06A /* UIApplication.swift in Sources */,
 				7650224C1A57828700315E26 /* DialogueController.swift in Sources */,
-				76225C6E1A85208800AFB997 /* ViewControllerExtension.swift in Sources */,
+				76225C6E1A85208800AFB997 /* UIViewController.swift in Sources */,
 				762E84A61A8A9ACD005F43A9 /* HamburgerButton.swift in Sources */,
 				76AED5051A526EDA0065076F /* Config.swift in Sources */,
 				765022531A588E8A00315E26 /* OAuthService.swift in Sources */,

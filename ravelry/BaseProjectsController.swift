@@ -57,6 +57,8 @@ class BaseProjectsController: BaseRavelryTableViewController, AsyncLoaderDelegat
     func loadComplete(object: AnyObject, action: ActionResponse) {
         if let parser = object as? ProjectParser<NSDictionary> {
             self.performSegueWithIdentifier(segueAction, sender: self)
+        } else if let parser = object as? PatternParser<NSDictionary> {
+            self.performSegueWithIdentifier(segueAction, sender: self)
         }
     }
     

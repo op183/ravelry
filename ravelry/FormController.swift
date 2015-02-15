@@ -10,9 +10,8 @@ import UIKit
 
 typealias ButtonAction = () -> ()
 
-class FormController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class FormController: UITableViewController, UIPickerViewDataSource, UIPickerViewDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
  
-    var table = UITableView(frame: CGRectMake(0, 0, 0, 0))
     var headlineText: String = ""
     var defaultRowHeight = CGFloat(40);
     var rowHeights = [CGFloat]()
@@ -31,53 +30,34 @@ class FormController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     var data = [Int:[Int]]()
     var dataDescriptions = [Int:[String]]()
     var selectedValues = [Int:Int]()
-    var endAction: (() -> ())?
+    var endAction: ButtonAction?
     var defaultFieldFrame = CGRectMake(0, 0, 0, 0)
     
     var selectedTextField: UITextField?
     var context: UIViewController?
-    
-    var scrollView: UIScrollView
 
     init(_ text: String) {
-        var layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        layout.itemSize = CGSize(width: 100, height: 50)
-        scrollView = UIScrollView()
         super.init(nibName: nil, bundle: nil)
         setupView(text)
     }
     
     required init(coder aDecoder: NSCoder) {
         println("Init Coder")
-        var layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        layout.itemSize = CGSize(width: 100, height: 60)
-        scrollView = UIScrollView()
         super.init(coder: aDecoder)
         setupView()
     }
  
     private func setupView(_ text: String = "") {
         headlineText = text
-        scrollView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        view.addSubview(scrollView)
-        scrollView.backgroundColor = UIColor.whiteColor()
-        fillSuperview(view, scrollView, 0)
+        //addKeyboardHideObserver("keyboardWillHide:")
+        //addKeyboardShowObserver("keyboardWillShow:")
         
-        addKeyboardHideObserver("keyboardWillHide:")
-        addKeyboardShowObserver("keyboardWillShow:")
-        
-        table.rowHeight = 60
-        table.delegate = self
-        table.dataSource = self
-        table.separatorStyle = UITableViewCellSeparatorStyle.None
-        table.setTranslatesAutoresizingMaskIntoConstraints(false)
-        scrollView.addSubview(table)
-        fillSuperview(scrollView, table, 0)
+        tableView!.delegate = self
+        tableView!.dataSource = self
+        tableView!.separatorStyle = UITableViewCellSeparatorStyle.None
     }
     
-    func present(#context: UIViewController, endAction: () -> ()) {
+    func present(#context: UIViewController, endAction: ButtonAction? = nil) {
         self.endAction = endAction
         self.context = context
         
@@ -110,6 +90,7 @@ class FormController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     
     func setLabel(text: String) {
         var label = UILabel()
+        
         label.textAlignment = .Left
         label.text = text
         label.font = basalFont
@@ -120,11 +101,11 @@ class FormController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     }
 
     //Main Form Table
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 50
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         //Set Up Headline
         var view = UIView()
         
@@ -140,15 +121,15 @@ class FormController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         return view
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return fields.count
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return rowHeights[indexPath.row]
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         var cell = UITableViewCell()
         var field = fields[indexPath.row]
@@ -157,22 +138,23 @@ class FormController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         field.setTranslatesAutoresizingMaskIntoConstraints(false)
         cell.contentView.setTranslatesAutoresizingMaskIntoConstraints(false)
         label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        
         cell.contentView.addSubview(label)
         cell.contentView.addSubview(field)
         cell.clipsToBounds = true
 
-        fillSuperview(cell, cell.contentView)
         
-        leftToSuperview(cell.contentView, label, 10)
-        topToSuperview(cell.contentView, label, 0)
-        bottomToSuperview(cell.contentView, label, 0)
-
-        rightToSuperview(cell.contentView, field, 10)
-        topToSuperview(cell.contentView, field, 0)
-        bottomToSuperview(cell.contentView, field, 0)
-
-        widthViaSuperview(cell.contentView, label, .LessThanOrEqual, 50)
-        stackXViaSuperview(cell.contentView, label, field, 10)
+        cell.subviewToFill(cell.contentView)
+        
+        cell.contentView.subviewToLeft(label, 10)
+        cell.contentView.subviewToTop(label, 0)
+        cell.contentView.subviewToBottom(label, 0)
+        
+        cell.contentView.subviewToRight(field, 10)
+        cell.contentView.subviewToTop(field, 0)
+        cell.contentView.subviewToBottom(field, 0)
+        cell.contentView.subviewWidth(label, 100)
+        cell.contentView.subviewRelationshipX(label, field, 10)
 
         return cell
     }
@@ -297,8 +279,10 @@ class FormController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     }
     
     func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView!) -> UIView {
+        
         var index = find(fields, pickerView)!
         var label = UILabel()
+        
         label.font = self.basalFont
         label.textColor = UIColor.blackColor()
         label.text = dataDescriptions[index]![row]
@@ -316,6 +300,7 @@ class FormController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             action: Selector("doAction:")
         )
 
+        actions.append(action)
         buttons.append(button)
     }
     
@@ -331,17 +316,16 @@ class FormController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             println(keyboardSize)
             var contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0)
             
-            scrollView.contentInset = contentInsets
-            scrollView.scrollIndicatorInsets = contentInsets
+            tableView.contentInset = contentInsets
+            tableView.scrollIndicatorInsets = contentInsets
             
             var rect = self.view.frame
             rect.size.height -= keyboardSize.height
             
-            
             if let textField = selectedTextField {
                 if !CGRectContainsPoint(rect, textField.frame.origin) {
                     var scrollPoint: CGPoint = CGPointMake(0.0, textField.frame.origin.y - (keyboardSize.height - textField.frame.size.height))
-                    scrollView.setContentOffset(scrollPoint, animated: true)
+                    tableView.setContentOffset(scrollPoint, animated: true)
                     println(scrollPoint)
                 }
             }
@@ -351,11 +335,6 @@ class FormController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
 
     @IBAction func keyboardWillHide(sender: AnyObject) {
         println("Keyboard is hiding")
-    }
-
-    @IBAction func cancel(sender: UIButton) {
-        self.removeFromParentViewController()
-        endAction!()
     }
     
     func doAction(sender: UIBarButtonItem) {

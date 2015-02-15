@@ -38,7 +38,7 @@ class AddToQueue: BaseRavelryActivity {
     override func performActivity() {
         DialogueController(title: "Add Pattern to Project Queue?").addCancelAction().addAction("OK") { (action) in
             ravelryUser!.addToQueue(self.pattern.id)
-        }.present(context: self.context!)
+        }.present()
     }
 
     override func activityDidFinish(completed: Bool) {

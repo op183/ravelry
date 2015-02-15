@@ -131,10 +131,9 @@ class ProjectViewController: BaseRavelryTableViewController, OAuthServiceResults
                     }
                     
                     dialogue.addAction("No") { (action) in
-                        self.dismissViewControllerAnimated(true, nil)
                     }
                     
-                    dialogue.present(context: form)
+                    dialogue.present()
                     
                 }
                 
@@ -166,13 +165,11 @@ class ProjectViewController: BaseRavelryTableViewController, OAuthServiceResults
                         self.dismissViewControllerAnimated(true, nil)
                     }
                     
-                    dialogue.present(context: form)
+                    dialogue.present()
                     
                 }
                 
-                form.present(context: self) {
-                    self.dismissViewControllerAnimated(true, nil)
-                }
+                form.present(context: self)
                 
             }
         } else {
@@ -367,9 +364,7 @@ class ProjectViewController: BaseRavelryTableViewController, OAuthServiceResults
             )
         }
         
-        form.present(context: self) {
-            self.dismissViewControllerAnimated(true, nil)
-        }
+        form.present(context: self)
     }
     
     @IBAction func saveProject(sender: AnyObject) {
@@ -382,7 +377,7 @@ class ProjectViewController: BaseRavelryTableViewController, OAuthServiceResults
         .addCancelAction()
         .addAction("OK") { action in
             mOAuthService.destroyProject(self.project!.id, delegate: self)
-        }.present(context: self)
+        }.present()
     }
     
     @IBAction func showPattern(sender: AnyObject) {
@@ -396,12 +391,9 @@ class ProjectViewController: BaseRavelryTableViewController, OAuthServiceResults
         form.addAction(UIImage(named: "circle-save-menu")!) {
             var size: NeedleSize = NeedleSize(rawValue: form.getPickerAtIndex(0)!)!
             self.project!.needles.append(Needle(id: size.id))
-            self.dismissViewControllerAnimated(true, nil)
         }
         
-        form.present(context: self) {
-            self.dismissViewControllerAnimated(true, nil)
-        }
+        form.present(context: self)
     }
     
     func imageHasLoaded(remaining: Int, _ total: Int) {

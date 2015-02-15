@@ -12,6 +12,7 @@ import UIKit
 class DialogueController: NSObject {
 
     var controller: UIAlertController
+    var context: UIViewController?
     
     init(title: String, message: String = "") {
         controller = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
@@ -78,12 +79,14 @@ class DialogueController: NSObject {
         return self
     }
     
-    func present(#context: UIViewController) -> DialogueController {
-        context.presentViewController(
+    func present() -> DialogueController {
+        context = UIApplication.getTopmostViewController()
+        context!.presentViewController(
             controller,
             animated: true,
             completion: nil
         )
+        
         return self
     }
     

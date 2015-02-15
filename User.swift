@@ -238,6 +238,7 @@ typealias DataFetchAction = () -> ()
             }
         } else if let parser = object as? ProjectParser<NSDictionary> {
             let project = parser.project
+            println("Adding Project \(project.id)")
             projects[project.id] = project
         } else {
             println("LoadComplete \(action)")

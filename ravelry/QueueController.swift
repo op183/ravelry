@@ -55,17 +55,14 @@ class QueueController: BaseProjectsController {
     }
     
     override func resultsHaveBeenFetched(data: NSData!, action: ActionResponse) {
-        switch action {
-            default:
-                selectedPattern = projects[selectedProjectIndex!].getPattern()
-                
-                PatternParser<NSDictionary>(
-                    mDelegate: self,
-                    aDelegate: self,
-                    pattern: selectedPattern!
-                ).loadData(data)
-
-        }
+        println("Pattern Results Fetched")
+        selectedPattern = projects[selectedProjectIndex!].getPattern()
+        
+        PatternParser<NSDictionary>(
+            mDelegate: self,
+            aDelegate: self,
+            pattern: selectedPattern!
+        ).loadData(data)
     }
     
 }

@@ -60,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //alert.addPasswordField(placeholder: "Password")
         }
         
-        alert.present(context: view)
+        alert.present()
     }
 
 	func applicationWillResignActive(application: UIApplication) {

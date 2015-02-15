@@ -1,5 +1,5 @@
 //
-//  ViewControllerExtension.swift
+//  UIViewController.swift
 //  ravelry
 //
 //  Created by Kellan Cummings on 2/6/15.
@@ -23,108 +23,13 @@ enum BarButtonAction: String {
     }
 }
 
-extension UIView {
-    func subviewToCenterX(view: UIView, constant: Float = 0) {
-        subviewToAbsolutePosition(view, constant, .CenterX)
-    }
-    
-    func subviewToCenterY(view: UIView, constant: Float = 0) {
-        subviewToAbsolutePosition(view, constant, .CenterY)
-    }
-
-    func subviewToCenter(view: UIView, constant: (x: Float, y: Float) = (0, 0)) {
-        subviewToAbsolutePosition(view, constant.y, .CenterY)
-        subviewToAbsolutePosition(view, constant.x, .CenterX)
-    }
-
-    func subviewToTop(view: UIView, _ top: Float) {
-        subviewToAbsolutePosition(view, top, .Top)
-    }
-    
-    func subviewToBottom(view: UIView, _ bottom: Float) {
-        addConstraint(
-            NSLayoutConstraint(
-                item: self,
-                attribute: .Bottom,
-                relatedBy: .Equal,
-                toItem: view,
-                attribute: .Bottom,
-                multiplier: 1,
-                constant: CGFloat(bottom)
-            )
-        )
-    }
-    
-    func subviewToLeft(view: UIView, _ left: Float) {
-        subviewToAbsolutePosition(view, left, .Left)
-    }
-    
-    func subviewToRight(view: UIView, _ right: Float) {
-        subviewToAbsolutePosition(view, right, .Right)
-    }
-
-    
-    func subviewToAbsolutePosition(view: UIView, _ cons: Float, _ attribute: NSLayoutAttribute, relation: NSLayoutRelation = .Equal) {
-        addConstraint(
-            NSLayoutConstraint(
-                item: view,
-                attribute: attribute,
-                relatedBy: relation,
-                toItem: self,
-                attribute: attribute,
-                multiplier: 1,
-                constant: CGFloat(cons)
-            )
-        )
-    }
-    
-    func subviewToFill(view: UIView, _ margin: CGFloat = 0) {
-        addConstraints(
-            [
-                NSLayoutConstraint(
-                    item: view,
-                    attribute: .Leading,
-                    relatedBy: .Equal,
-                    toItem: self,
-                    attribute: .Leading,
-                    multiplier: 1,
-                    constant: margin
-                ),
-                NSLayoutConstraint(
-                    item: view,
-                    attribute: .Trailing,
-                    relatedBy: .Equal,
-                    toItem: self,
-                    attribute: .Trailing,
-                    multiplier: 1,
-                    constant: margin
-                ),
-                NSLayoutConstraint(
-                    item: view,
-                    attribute: .Top,
-                    relatedBy: .Equal,
-                    toItem: self,
-                    attribute: .Top,
-                    multiplier: 1,
-                    constant: margin
-                ),
-                NSLayoutConstraint(
-                    item: view,
-                    attribute: .Bottom,
-                    relatedBy: .Equal,
-                    toItem: self,
-                    attribute: .Bottom,
-                    multiplier: 1,
-                    constant: margin
-                )
-            ]
-        )
-    }
-    
-}
-
 extension UIViewController {
     
+    func onResourceFailedToLoad() {
+        hideOverlay()
+        
+    }
+
     func shouldAutorotate() -> Bool {
         return false
     }
@@ -175,13 +80,26 @@ extension UIViewController {
     }
     
     func showOverlay() {
+        println("Showing Overlay")
+        println(self)
+        println(navigationController)
         navigationController?.view.addSubview(OverlayView())
     }
     
     func hideOverlay() {
-        if let nav = navigationController {
+        if let nav = self as? UINavigationController {
             for v in nav.view.subviews {
+                println(v)
                 if let overlay = v as? OverlayView {
+                    println("Overlay Hidden")
+                    overlay.hidden = true
+                }
+            }
+        } else if let nav = navigationController {
+            for v in nav.view.subviews {
+                println(v)
+                if let overlay = v as? OverlayView {
+                    println("Overlay Hidden")
                     overlay.hidden = true
                 }
             }
@@ -307,20 +225,6 @@ extension UIViewController {
         )
     }
     
-    func stackXViaSuperview(parent: UIView, _ viewA: UIView, _ viewB: UIView, _ cons: Float = 0) {
-        parent.addConstraint(
-            NSLayoutConstraint(
-                item: viewB,
-                attribute: .Left,
-                relatedBy: .Equal,
-                toItem: viewA,
-                attribute: .Right,
-                multiplier: 1,
-                constant: CGFloat(cons)
-            )
-        )
-    }
-    
     func stackX(viewA: UIView, _ viewB: UIView, _ cons: Float = 0) {
         self.view.addConstraint(
             NSLayoutConstraint(
@@ -329,6 +233,21 @@ extension UIViewController {
                 relatedBy: .Equal,
                 toItem: viewB,
                 attribute: .Left,
+                multiplier: 1,
+                constant: CGFloat(cons)
+            )
+        )
+    }
+
+    
+    func stackXViaSuperview(parent: UIView, _ viewA: UIView, _ viewB: UIView, _ cons: Float = 0) {
+        parent.addConstraint(
+            NSLayoutConstraint(
+                item: viewB,
+                attribute: .Left,
+                relatedBy: .Equal,
+                toItem: viewA,
+                attribute: .Right,
                 multiplier: 1,
                 constant: CGFloat(cons)
             )

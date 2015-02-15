@@ -36,7 +36,7 @@ class AddToProjects: BaseRavelryActivity, OAuthServiceResultsDelegate {
     override func performActivity() {
         DialogueController(title: "Add Pattern to Projects?").addCancelAction().addAction("OK") { (action) in
             ravelryUser!.createProject(self.pattern)
-        }.present(context: self.context!)
+        }.present()
     }
     
     override func activityDidFinish(completed: Bool) {
